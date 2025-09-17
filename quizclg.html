@@ -319,10 +319,16 @@
             const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
 
+            // Ensure combinedAnswers is always defined (works whether or not phase flows created it earlier)
+            const quizAnswers = JSON.parse(localStorage.getItem("careerDishaQuizAnswers") || "{}");
+            const extraAnswersFromStorage = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
+            const combinedAnswers = { quizAnswers, extraAnswers: extraAnswersFromStorage };
+
+
             // read any existing extra answers from localStorage (phase2 will use this too)
             const extraAnswersLocal = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
             // combine for initial save/requests
-            const combinedAnswersInitial = { ...extraAnswersLocal, quizAnswers: userAnswers };
+            const combinedAnswersInitial = { extraAnswers: extraAnswersLocal, quizAnswers: userAnswers };
 
             if (phase !== "final") {
                 // ================= Phase 1 =================
