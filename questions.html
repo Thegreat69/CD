@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extra Questions | CareerDisha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <style>
+    .quiz-card {
+      transition: all 0.3s ease;
+    }
+    .quiz-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .quiz-card.selected {
+      border-color: #3b82f6;
+      background-color: #eff6ff;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+  <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <a href="./index.html" class="flex-shrink-0 flex items-center">
+            <i data-feather="compass" class="text-blue-600 h-8 w-8"></i>
+            <span class="ml-2 text-xl font-bold text-blue-600">CareerDisha</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+      <div class="flex justify-between mb-2">
+        <span class="text-sm font-medium text-blue-600">Progress</span>
+        <span class="text-sm font-medium text-gray-600"><span id="current-question-display">1</span>/<span id="total-questions-display">0</span></span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2.5">
+        <div id="quiz-progress" class="progress-bar bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div id="quiz-container" class="bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+      <!-- Questions injected here -->
+    </div>
+
+    <div id="navigation-buttons" class="mt-8 flex justify-between">
+      <button id="prev-btn" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition hidden items-center"><i data-feather="arrow-left" class="inline-block mr-2 h-4 w-4"></i>Back</button>
+      <button id="next-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition ml-auto flex items-center">Next<i data-feather="arrow-right" class="inline-block ml-2 h-4 w-4"></i></button>
+    </div>
+    
+    <div id="loading-container" class="hidden text-center py-8">
+      <svg class="animate-spin h-10 w-10 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <h2 class="mt-4 text-xl font-semibold text-gray-800">Submitting your answers...</h2>
+      <p class="text-gray-600">Please wait while we prepare your final analysis.</p>
+    </div>
+  </div>
+
+  <script>
+    // Load extra questions from localStorage
+    // Robust loader for extra questions
+let extraQuestions = [];
+try {
+  const raw = localStorage.getItem("careerDishaExtraQuestions");
+  if (raw) {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) extraQuestions = parsed;
+    else if (parsed && Array.isArray(parsed.extraQuestions)) extraQuestions = parsed.extraQuestions;
+    else if (parsed && parsed.questions && Array.isArray(parsed.questions)) extraQuestions = parsed.questions;
+    else if (typeof parsed === "object") extraQuestions = [parsed];
+  }
+} catch (e) {
+  console.error("Error parsing careerDishaExtraQuestions:", e, localStorage.getItem("careerDishaExtraQuestions_rawGenerator"));
+  extraQuestions = [];
+}
+
+let currentQuestionIndex = 0;
+const userExtraAnswers = {};
+
+const quizContainer = document.getElementById('quiz-container');
+const nextBtn = document.getElementById('next-btn');
+const prevBtn = document.getElementById('prev-btn');
+
+function renderQuestion() {
+  const questionData = extraQuestions[currentQuestionIndex];
+  if (!questionData) {
+    quizContainer.innerHTML = `
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">No extra questions found</h2>
+      <p class="text-gray-600 mb-4">We couldn't load any follow-up questions. Please return to the quiz.</p>
+      <div><a href="./quiz.html" class="px-4 py-2 bg-blue-600 text-white rounded-md">Return to Quiz</a></div>
+    `;
+    return;
+  }
+
+  console.debug("Rendering questionData:", questionData);
+
+  // Try to get options safely
+  let optionsArr = [];
+  if (Array.isArray(questionData.options)) {
+    optionsArr = questionData.options;
+  } else if (typeof questionData.options === "string") {
+    optionsArr = questionData.options.split(/[\r\n;•·,|]+/).map(s => s.trim()).filter(Boolean);
+  } else if (Array.isArray(questionData.choices)) {
+    optionsArr = questionData.choices;
+  }
+
+  if (!optionsArr.length) {
+    quizContainer.innerHTML = `
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">${questionData.question || "Untitled question"}</h2>
+      <p class="text-gray-600 mb-4">${questionData.subtext || ""}</p>
+      <div class="text-gray-500 mb-4">No predefined options for this question. Please type your answer below:</div>
+<input 
+  type="text" 
+  id="free-answer" 
+  placeholder="Enter your answer here..." 
+  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+/>
+<button id="submit-answer" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Submit</button>
+
+    `;
+
+   document.getElementById('submit-answer').addEventListener('click', () => {
+  const input = document.getElementById('free-answer');
+  const value = input.value.trim();
+  if (value) {
+    userExtraAnswers[questionData.id] = [value];
+  }
+
+  if (currentQuestionIndex < extraQuestions.length - 1) {
+    currentQuestionIndex++;
+    renderQuestion();
+  } else {
+    finishExtraQuestions();
+  }
+});
+
+    return;
+  }
+
+  // Normal rendering with options
+  let optionsHtml = '';
+  optionsArr.forEach(option => {
+    const isSelected = userExtraAnswers[questionData.id] && userExtraAnswers[questionData.id].includes(option);
+    optionsHtml += `
+      <div class="quiz-card border-2 border-gray-200 rounded-lg p-4 cursor-pointer ${isSelected ? 'selected' : ''}" data-value="${option}">
+        <h3 class="font-medium text-gray-800">${option}</h3>
+      </div>
+    `;
+  });
+
+  quizContainer.innerHTML = `
+    <h2 class="text-2xl font-bold text-gray-900 mb-2">${questionData.question}</h2>
+    <p class="text-gray-600 mb-8">${questionData.subtext || ""}</p>
+    <div class="grid grid-cols-1 ${optionsArr.length > 4 ? 'sm:grid-cols-2' : ''} gap-4">
+      ${optionsHtml}
+    </div>
+  `;
+
+      document.querySelectorAll('.quiz-card').forEach(card => {
+        card.addEventListener('click', () => handleOptionSelect(card, questionData));
+      });
+
+      updateNavigation();
+      feather.replace();
+    }
+
+    function handleOptionSelect(card, questionData) {
+      const value = card.dataset.value;
+      if (!userExtraAnswers[questionData.id]) {
+        userExtraAnswers[questionData.id] = [];
+      }
+
+      if (questionData.type === 'single') {
+        userExtraAnswers[questionData.id] = [value];
+        document.querySelectorAll('.quiz-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+      } else {
+        const selectedValues = userExtraAnswers[questionData.id];
+        if (selectedValues.includes(value)) {
+          userExtraAnswers[questionData.id] = selectedValues.filter(v => v !== value);
+          card.classList.remove('selected');
+        } else {
+          userExtraAnswers[questionData.id].push(value);
+          card.classList.add('selected');
+        }
+      }
+    }
+
+    function updateNavigation() {
+      document.getElementById('current-question-display').textContent = currentQuestionIndex + 1;
+      document.getElementById('total-questions-display').textContent = extraQuestions.length;
+      document.getElementById('quiz-progress').style.width = ((currentQuestionIndex + 1) / extraQuestions.length) * 100 + '%';
+
+      prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
+      nextBtn.innerHTML = currentQuestionIndex === extraQuestions.length - 1 
+        ? 'Finish <i data-feather="award" class="inline-block ml-2 h-4 w-4"></i>'
+        : 'Next <i data-feather="arrow-right" class="inline-block ml-2 h-4 w-4"></i>';
+    }
+
+
+// Ensure navigation button event listeners are only set up once
+nextBtn.addEventListener('click', () => {
+  if (!userExtraAnswers[extraQuestions[currentQuestionIndex].id] || userExtraAnswers[extraQuestions[currentQuestionIndex].id].length === 0) {
+    alert("Please select an option to continue.");
+    return;
+  }
+  if (currentQuestionIndex < extraQuestions.length - 1) {
+    currentQuestionIndex++;
+    renderQuestion();
+  } else {
+    finishExtraQuestions();
+  }
+});
+
+prevBtn.addEventListener('click', () => {
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+});
+
+    async function finishExtraQuestions() {
+      quizContainer.classList.add('hidden');
+      document.getElementById('navigation-buttons').classList.add('hidden');
+      document.getElementById('loading-container').classList.remove('hidden');
+
+      // Save to localStorage
+      localStorage.setItem("careerDishaExtraAnswers", JSON.stringify(userExtraAnswers));
+
+      // --- START OF FIX ---
+      // Read which quiz sent the user here
+      const urlParams = new URLSearchParams(window.location.search);
+      const originQuiz = urlParams.get('from');
+
+      // Determine the correct redirect target. Default to 'quiz.html' if 'from' is missing.
+      let targetQuizFile = 'quiz.html';
+      if (originQuiz === 'quiz10') {
+        targetQuizFile = 'quiz10.html';
+      } else if (originQuiz === 'quiz12') {
+        targetQuizFile = 'quiz12.html';
+      } else if (originQuiz === 'quizclg') {
+        targetQuizFile = 'quizclg.html';
+      }
+
+      // Redirect to the correct quiz file for final analysis
+      window.location.href = `./${targetQuizFile}?phase=final`;
+      // --- END OF FIX ---
+    }
+
+    // Initial load
+    renderQuestion();
+  </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Select Study Level | CareerDisha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body class="font-sans antialiased bg-gray-50 text-gray-800">
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center">
+      <a href="./index.html" class="flex items-center gap-3">
+        <i data-feather="compass" class="text-blue-600 h-6 w-6"></i>
+        <span class="text-lg font-bold text-blue-600">CareerDisha</span>
+      </a>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto mt-12 p-6">
+    <h1 class="text-2xl font-bold mb-2">Quick question — what's your current study level?</h1>
+    <p class="text-gray-600 mb-6">This helps us show the right version of the quiz for you.</p>
+
+    <div id="options" class="grid gap-4">
+      <button data-value="class10" class="level-card border rounded-lg p-4 text-left hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold">Class 10 or below</h3>
+            <p class="text-sm text-gray-600">I am in class 10, 9 or below.</p>
+          </div>
+          <div><i data-feather="chevron-right" class="h-5 w-5"></i></div>
+        </div>
+      </button>
+
+      <button data-value="11-12" class="level-card border rounded-lg p-4 text-left hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold">Class 11–12 (Science / Commerce / Arts)</h3>
+            <p class="text-sm text-gray-600">I am in 11th or 12th standard.</p>
+          </div>
+          <div><i data-feather="chevron-right" class="h-5 w-5"></i></div>
+        </div>
+      </button>
+
+      <button data-value="college" class="level-card border rounded-lg p-4 text-left hover:shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold">College (UG / Diploma / Other)</h3>
+            <p class="text-sm text-gray-600">I am in an undergraduate or diploma program.</p>
+          </div>
+          <div><i data-feather="chevron-right" class="h-5 w-5"></i></div>
+        </div>
+      </button>
+    </div>
+
+
+    <div class="mt-6 flex items-center gap-3">
+      <button id="continueBtn" class="px-6 py-2 bg-blue-600 text-white rounded-md disabled:opacity-60" disabled>Continue</button>
+      <a href="./index.html" class="text-sm text-gray-600 hover:underline">Back to home</a>
+    </div>
+  </main>
+
+  <script>
+    feather.replace();
+  
+    let chosen = null;
+    const continueBtn = document.getElementById('continueBtn');
+    document.querySelectorAll('.level-card').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.level-card').forEach(c=>c.classList.remove('ring-2','ring-blue-300'));
+        btn.classList.add('ring-2','ring-blue-300');
+        chosen = btn.dataset.value;
+        continueBtn.disabled = false;
+      });
+    });
+  
+    continueBtn.addEventListener('click', () => {
+      if (!chosen) return;
+      // Save selection (optional, for later use)
+      localStorage.setItem('careerDishaStudentLevel', chosen);
+    
+      // NEW routing rules:
+      // - class10 -> quiz10.html (then questions10.html)
+      // - 11-12  -> existing quiz.html (use ?level=11-12 if you want quiz prefill)
+      // - college -> quizclg.html (then questionsclg.html)
+      if (chosen === 'class10') {
+        window.location.href = './quiz10.html';
+      } else if (chosen === '11-12') {
+        // if you want the shared quiz to prefill the study-level, you can pass ?level=11-12
+        window.location.href = './quiz12.html?';
+      } else if (chosen === 'college') {
+        window.location.href = './quizclg.html';
+      } else {
+        // fallback: go to default quiz
+        window.location.href = './quiz.html';
+      }
+    });
+  
+    // (UX) pre-select saved choice if user returns
+    const prev = localStorage.getItem('careerDishaStudentLevel');
+    if (prev) {
+      const el = document.querySelector(`[data-value="${prev}"]`);
+      if (el) { el.classList.add('ring-2','ring-blue-300'); chosen = prev; continueBtn.disabled = false; }
+    }
+  </script>
+  
+</body>
+</html>

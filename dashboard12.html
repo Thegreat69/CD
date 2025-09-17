@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senior Secondary Roadmap | CareerDisha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.8s ease-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        #roadmap-container ul { list-style-position: inside; padding-left: 0.5rem; margin-top: 0.75rem; }
+        #roadmap-container li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                     <a href="./index.html" class="flex-shrink-0 flex items-center">
+                        <i data-feather="compass" class="text-blue-600 h-8 w-8"></i>
+                        <span class="ml-2 text-xl font-bold text-blue-600">CareerDisha</span>
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm-items-center space-x-8">
+                    <a href="./index.html#features" class="text-gray-600 hover:text-blue-600 font-medium">Features</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Pathways</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Colleges</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative">
+                        <button id="user-menu-button" class="flex items-center space-x-2">
+                            <span class="text-gray-700 font-medium" id="user-name">Student</span>
+                            <img class="h-8 w-8 rounded-full" src="https://placehold.co/100x100/EBF4FF/76A9FA?text=S" alt="User profile">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8 flex justify-between items-start md:items-center">
+             <h1 class="text-3xl font-bold text-gray-900">Your Personalized Roadmap</h1>
+             <a href="./quiz10.html" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition duration-300 inline-flex items-center flex-shrink-0 mt-4 md:mt-0">
+                <i data-feather="refresh-cw" class="h-4 w-4 mr-2"></i> Retake Quiz
+            </a>
+        </div>
+        <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-lg p-6 text-gray-800 mb-8" id="roadmap-container">
+            <p>Loading your personalized roadmap...</p>
+        </div>
+        
+        <div class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Your Potential Career Branches</h2>
+                </div>
+                <div id="flowchart-container" class="p-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <p>Loading your career branches...</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Your Stream Recommendations</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid md:grid-cols-3 gap-6" id="stream-recommendations-container">
+                        </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-900">Top Career Paths For You</h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid md:grid-cols-2 gap-6" id="career-paths-container">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    // --- CONFIGURATION SWITCH ---
+    // Set this to 'false' when your Supabase is fully set up and you want to go live.
+    const LOCAL_MODE = true;
+
+    /**
+     * Updates the user's name in the navigation bar.
+     * In LOCAL_MODE, it uses a placeholder. Otherwise, it calls Supabase.
+     */
+    async function updateUserNav() {
+        const userNameEl = document.getElementById('user-name');
+        if (!userNameEl) return; // Safety check
+
+        if (LOCAL_MODE) {
+            userNameEl.textContent = "LocalUser";
+            return; // In local mode, we stop here.
+        }
+
+        // The code below only runs if LOCAL_MODE is false.
+        try {
+            const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
+            
+            // This was the fix: We use the global 'supabase' object from the script tag
+            // to create a new client, instead of causing a reference error.
+            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                userNameEl.textContent = session.user.email.split('@')[0];
+            } else {
+                userNameEl.textContent = "Student";
+            }
+        } catch (error) {
+            console.error("Error fetching Supabase user:", error);
+            userNameEl.textContent = "Student"; // Show a default name if Supabase fails
+        }
+    }
+
+    // This part of your script loads the dashboard results from local storage
+    document.addEventListener('DOMContentLoaded', () => {
+        updateUserNav(); // Run the function to set the user's name
+
+        let resultsData;
+        try {
+            resultsData = JSON.parse(localStorage.getItem('careerDishaResults') || "{}");
+        } catch {
+            resultsData = {};
+        }
+
+        if (!resultsData || !resultsData.roadmapSummary) {
+            resultsData = {
+                roadmapSummary: "Please take the quiz to generate your personalized roadmap.",
+                streamRecommendations: [
+                    { stream: "Science", matchPercentage: 0, reason: "Complete the quiz." },
+                    { stream: "Commerce", matchPercentage: 0, reason: "Complete the quiz." },
+                    { stream: "Arts", matchPercentage: 0, reason: "Complete the quiz." }
+                ],
+                topCareerPaths: [],
+                careerWeb: {}
+            };
+        }
+        
+        populateDashboard(resultsData);
+    });
+        
+    // This function populates the dashboard with your quiz results. No changes needed here.
+    function populateDashboard(data) {
+        // 1. Populate Summary
+        document.getElementById('roadmap-container').innerHTML = data.roadmapSummary;
+        
+        // 2. Populate Career Branches
+        const flowchartContainer = document.getElementById('flowchart-container');
+        flowchartContainer.innerHTML = ''; 
+        const careerWeb = data.careerWeb;
+
+        if (careerWeb && typeof careerWeb === 'object' && Object.keys(careerWeb).length > 0) {
+            Object.entries(careerWeb).forEach(([title, steps]) => {
+                const branchColumn = document.createElement('div');
+                branchColumn.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200 flex flex-col';
+
+                let stepsHtml = '';
+                if (Array.isArray(steps)) {
+                    steps.forEach(step => {
+                        stepsHtml += `<div class="flex items-start mb-3"><div class="flex-shrink-0 bg-blue-100 h-5 w-5 rounded-full flex items-center justify-center mr-3 mt-1 ring-4 ring-white"><i data-feather="arrow-right" class="text-blue-600 h-3 w-3"></i></div><p class="text-sm text-gray-700">${step}</p></div>`;
+                    });
+                }
+                
+                branchColumn.innerHTML = `<h3 class="font-semibold text-center mb-4 text-blue-700">${title}</h3><div>${stepsHtml}</div>`;
+                flowchartContainer.appendChild(branchColumn);
+            });
+        } else {
+            flowchartContainer.innerHTML = "<p class='col-span-full text-gray-600'>Your career branches will appear here after you complete the quiz.</p>";
+        }
+
+        // 3. Populate Stream Recommendations
+        const streamContainer = document.getElementById('stream-recommendations-container');
+        streamContainer.innerHTML = '';
+        const streamColors = { Science: '#3B82F6', Commerce: '#10B981', Arts: '#8B5CF6' };
+        const streamBgColors = { Science: '#EFF6FF', Commerce: '#ECFDF5', Arts: '#F5F3FF' };
+        data.streamRecommendations.sort((a, b) => b.matchPercentage - a.matchPercentage).forEach(rec => {
+            const radius = 15.9155, circumference = 2 * Math.PI * radius;
+            const offset = circumference - (rec.matchPercentage / 100) * circumference;
+            const cardHtml = `<div class="border rounded-lg p-4 text-center"><div class="relative w-24 h-24 mx-auto mb-4"><svg class="w-full h-full" viewBox="0 0 36 36"><path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${streamBgColors[rec.stream] || '#E5E7EB'}" stroke-width="3"/><path class="progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${streamColors[rec.stream] || '#6B7280'}" stroke-width="3" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/><text x="18" y="21.5" text-anchor="middle" font-size="8" fill="${streamColors[rec.stream] || '#6B7280'}" font-weight="bold">${rec.matchPercentage}%</text></svg></div><h3 class="text-lg font-medium" style="color: ${streamColors[rec.stream] || '#1F2937'}">${rec.stream}</h3><p class="text-sm text-gray-600 mt-1">${rec.reason}</p></div>`;
+            streamContainer.innerHTML += cardHtml;
+        });
+        
+        // 4. Populate Top Career Paths
+        const careerContainer = document.getElementById('career-paths-container');
+        careerContainer.innerHTML = '';
+        const careerIcons = { tech: "cpu", medical: "activity", business: "dollar-sign", creative: "pen-tool", law: "award", social: "users", default: "briefcase" };
+
+        if (!data.topCareerPaths || data.topCareerPaths.length === 0) {
+            careerContainer.innerHTML = `<p class="text-gray-600 col-span-2">Complete the quiz to see top career paths.</p>`;
+        } else {
+            data.topCareerPaths.forEach(path => {
+                const icon = careerIcons[path.icon] || careerIcons.default;
+                const cardHtml = `<div class="border border-gray-200 rounded-lg p-4 card-hover transition-all duration-300"><div class="flex items-start"><div class="bg-gray-100 p-3 rounded-full mr-4 flex-shrink-0"><i data-feather="${icon}" class="text-gray-600 h-5 w-5"></i></div><div><h3 class="font-semibold text-lg mb-1">${path.career}</h3><p class="text-gray-600 text-sm mb-2">${path.description}</p><div class="flex items-center text-sm text-gray-500"><i data-feather="briefcase" class="h-4 w-4 mr-1.5"></i><span>${path.salary}</span></div></div></div></div>`;
+                careerContainer.innerHTML += cardHtml;
+            });
+        }
+        
+        feather.replace();
+    }  
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</body>
+</html>
