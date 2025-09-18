@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <!-- Android / Chrome -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CareerDisha">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
+    
+    <!-- Windows / Edge -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Career Quiz | CareerDisha</title>
@@ -316,7 +329,7 @@
 
         try {
             // NOTE: the keys below are the ones you had in the original code (kept as requested).
-            const GEMINI_API_KEY = "AIzaSyBvR0vZe9wRr7ul6diO45SaueK8-D_Amk4";
+            const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE";
             const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
             const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
 
@@ -497,7 +510,7 @@ const prompt = `
     1.  **roadmapSummary**: A personalized summary for the student (~200 words), formatted as an HTML string with a \`<ul>\` list, directly addressing their answers.
     2.  **streamRecommendations**: An array of exactly 3 stream recommendation objects (Science, Commerce, Arts). Each object must have keys for "stream", "matchPercentage" (a number between 20-95), and "reason" (a short explanation reflecting their answers).
     3.  **topCareerPaths**: An array of exactly 4 career path objects. Each object must have keys for "career", "description", "salary", AND "icon". For the "icon" key, choose the most relevant category from this list: [tech, medical, business, creative, law, social].
-    4.  **careerWeb**: An object representing 3 different branching career paths with their steps, relevant to the student's choices.
+    3.  **careerWeb**: Generate an object with 3 keys named after academic streams (e.g., "Science Path"). Each path must be an array of exactly 3 objects. Each object needs a "step" key (a simple title like "Core Subjects") and a "description" key (a simple 1-2 sentence explanation of that stream's subjects and future careers).
     5.  **recommendedResources**: An array of 2-4 helpful resources for a Class 10 student. Each resource must be an object with "title", "description", and a valid "url".
 
 

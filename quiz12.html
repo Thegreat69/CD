@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <!-- Android / Chrome -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CareerDisha">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
+    
+    <!-- Windows / Edge -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Career Quiz | CareerDisha</title>
@@ -369,7 +382,7 @@
     document.getElementById('loading-container').classList.remove('hidden');
 
     try {
-        const GEMINI_API_KEY = "AIzaSyBvR0vZe9wRr7ul6diO45SaueK8-D_Amk4";
+        const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE";
         const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
 
@@ -473,8 +486,8 @@ extraQs = extraQs.slice(0, 10);
 
     1.  **roadmapSummary**: A personalized summary (~150 words) focusing on advice for Class 11/12.
     2.  **topCareerPaths**: An array of 4 career path objects, each with "career", "description", "salary", and an "icon".
-    3.  **careerWeb**: An object representing 2-3 different branching career paths.
-    4.  **keyTimeline**: An array of 3-4 upcoming events. Each event must be an object with "title", "date", and "type" ('exam' or 'event').
+    3.  **careerWeb**: Generate an object with 3 career path keys (e.g., "Engineering Path"). Each path must be an array of 4 objects. Each object needs a "step" key (a time-bound title like "Class 12 Strategy") and a "description" key (1-2 sentences of actionable advice mentioning relevant Indian exams like JEE, NEET, CLAT, etc.).
+    4.  **keyTimeline**: **You MUST generate** an array of **at least 3** relevant upcoming events for a Class 12 student in India. This field is mandatory. Each event must be an object with "title", "date" (e.g., "Oct 2025"), and "type" ('exam' or 'event').
     5.  **recommendedResources**: An array of 2-4 helpful resources. Each resource must be an object with "title", "description", and a real, valid "url".
 
     Example of the required JSON output format:

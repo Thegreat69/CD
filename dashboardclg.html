@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+        <!-- Android / Chrome -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CareerDisha">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
+    
+    <!-- Windows / Edge -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>College & Career Roadmap | CareerDisha</title>
@@ -15,6 +28,31 @@
         #chat-close-btn { font-size: 1.5rem; line-height: 1; }
         #chat-messages { display: flex; flex-direction: column; }
     </style>
+    <style>
+    /* Keyframe animation for the button to pop in */
+    @keyframes pop-in {
+        0% { transform: scale(0) rotate(90deg); opacity: 0; }
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* Keyframe animation for the speech bubble to appear and disappear */
+    @keyframes fade-in-out {
+        0% { opacity: 0; transform: translateY(10px); }
+        20% { opacity: 1; transform: translateY(0); }
+        85% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(10px); }
+    }
+
+    /* Applying the animations */
+    .chatbot-container {
+        animation: pop-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s forwards;
+        transform: scale(0); /* Start hidden */
+    }
+    .speech-bubble {
+        animation: fade-in-out 6s ease-in-out 1.5s forwards;
+        opacity: 0; /* Start hidden */
+    }
+</style>
 </head>
 <body class="font-sans antialiased text-gray-800 bg-gray-50">
     <nav class="bg-white shadow-sm sticky top-0 z-50">
@@ -28,8 +66,8 @@
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm-items-center space-x-8">
                     <a href="./index.html#features" class="text-gray-600 hover:text-blue-600 font-medium">Features</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Pathways</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Colleges</a>
+                    <a href="CareerDetailsPage.html" class="text-gray-600 hover:text-blue-600 font-medium">Pathways</a>
+                    <a href="CareerDetailsPage.html" class="text-gray-600 hover:text-blue-600 font-medium">Colleges</a>
                 </div>
                 <div class="flex items-center">
                     <div class="relative">
@@ -88,10 +126,10 @@
             
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-900">Top Career Paths For You</h2>
+                    <h2 class="text-xl font-semibold text-gray-900">Key Skills to Develop</h2>
                 </div>
                 <div class="p-6">
-                    <div class="grid md:grid-cols-2 gap-6" id="career-paths-container">
+                    <div class="grid md:grid-cols-2 gap-6" id="skills-container">
                         </div>
                 </div>
             </div>
@@ -112,18 +150,21 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            updateUserNav();
-            window.resultsData = {};
-            try { window.resultsData = JSON.parse(localStorage.getItem('careerDishaResults') || "{}"); } catch { window.resultsData = {}; }
-            if (!window.resultsData || !window.resultsData.roadmapSummary) {
-                window.resultsData = {
-                    roadmapSummary: "Please take the quiz to generate your personalized roadmap.",
-                    topCareerPaths: [], careerWeb: {}, keyTimeline: [], recommendedResources: []
-                };
-            }
-            populateDashboard(window.resultsData);
-        });
-            
+    updateUserNav();
+    window.resultsData = {};
+    try { window.resultsData = JSON.parse(localStorage.getItem('careerDishaResults') || "{}"); } catch { window.resultsData = {}; }
+    if (!window.resultsData || !window.resultsData.roadmapSummary) {
+        window.resultsData = {
+            roadmapSummary: "Please take the quiz to generate your personalized roadmap.",
+            keySkills: [],
+            careerWeb: {}, 
+            keyTimeline: [], 
+            recommendedResources: []
+        };
+    }
+    // THIS IS THE MISSING LINE THAT FIXES EVERYTHING
+    populateDashboard(window.resultsData); 
+});
         function populateDashboard(data) {
             document.getElementById('roadmap-container').innerHTML = data.roadmapSummary;
             const flowchartContainer = document.getElementById('flowchart-container');
@@ -131,7 +172,17 @@
             if (data.careerWeb && Object.keys(data.careerWeb).length > 0) {
                 Object.entries(data.careerWeb).forEach(([title, steps]) => {
                     let stepsArray = Array.isArray(steps) ? steps : (typeof steps === 'string' ? steps.split('\n').filter(s => s.trim() !== '') : []);
-                    const stepsHtml = stepsArray.map(step => `<div class="flex items-start mb-3"><div class="flex-shrink-0 bg-blue-100 h-5 w-5 rounded-full items-center justify-center mr-3 mt-1 ring-4 ring-white"><i data-feather="arrow-right" class="text-blue-600 h-3 w-3"></i></div><p class="text-sm text-gray-700">${step}</p></div>`).join('');
+                    const stepsHtml = stepsArray.map(step => `
+    <div class="flex items-start mb-3">
+        <div class="flex-shrink-0 bg-blue-100 h-5 w-5 rounded-full flex items-center justify-center mr-3 mt-1 ring-4 ring-white">
+            <i data-feather="arrow-right" class="text-blue-600 h-3 w-3"></i>
+        </div>
+        <div>
+            <p class="font-semibold text-sm text-gray-800">${step.step || 'Unnamed Step'}</p>
+            <p class="text-xs text-gray-600">${step.description || ''}</p>
+        </div>
+    </div>
+`).join('');
                     flowchartContainer.innerHTML += `<div class="bg-gray-50 rounded-lg p-4 border"><h3 class="font-semibold text-center mb-4 text-blue-700">${title}</h3><div>${stepsHtml}</div></div>`;
                 });
             } else { flowchartContainer.innerHTML = "<p>Your career branches will appear here.</p>"; }
@@ -141,33 +192,53 @@
                 const eventIcons = { internship: 'briefcase', exam: 'edit-3', placement: 'award', event: 'gift' };
                 const eventColors = { internship: 'text-blue-600 bg-blue-100', exam: 'text-purple-600 bg-purple-100', placement: 'text-green-600 bg-green-100', event: 'text-yellow-600 bg-yellow-100' };
                 data.keyTimeline.forEach(event => {
-                    timelineContainer.innerHTML += `<div class="flex items-center p-3 bg-gray-50 rounded-lg border"><div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${eventColors[event.type] || 'bg-gray-100'}"><i data-feather="${eventIcons[event.type] || 'calendar'}" class="h-5 w-5"></i></div><div class="ml-4 flex-grow"><p class="font-semibold">${event.title}</p></div><div class="text-sm font-medium text-gray-600">${event.date}</div></div>`;
+                    timelineContainer.innerHTML += `<div class="flex items-center p-3 bg-gray-50 rounded-lg border"><div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${eventColors[event.type] || 'bg-gray-100'}"><i data-feather="${eventIcons[event.type] || 'calendar'}" class="h-5 w-5"></i></div><div class="ml-4 flex-grow"><p class="font-semibold">${event.title || event.name}</p></div><div class="text-sm font-medium text-gray-600">${event.date}</div></div>`;
                 });
             } else { timelineContainer.innerHTML = "<p>Important timelines will appear here.</p>"; }
             const resourcesContainer = document.getElementById('resources-container');
             resourcesContainer.innerHTML = '';
             if (data.recommendedResources && data.recommendedResources.length > 0) {
                 data.recommendedResources.forEach(resource => {
-                    resourcesContainer.innerHTML += `<a href="${resource.url}" target="_blank" rel="noopener noreferrer" class="block p-4 border rounded-lg hover:shadow-md card-hover"><div class="flex items-start"><div class="mt-1 mr-3"><i data-feather="link" class="h-4 w-4 text-blue-500"></i></div><div><p class="font-semibold">${resource.title}</p><p class="text-sm text-gray-600">${resource.description}</p></div></div></a>`;
+                    resourcesContainer.innerHTML += `<a href="${resource.url}" target="_blank" rel="noopener noreferrer" class="block p-4 border rounded-lg hover:shadow-md card-hover"><div class="flex items-start"><div class="mt-1 mr-3"><i data-feather="link" class="h-4 w-4 text-blue-500"></i></div><div><p class="font-semibold">${resource.title || resource.name}</p><p class="text-sm text-gray-600">${resource.description || resource.desc || ''}</p></div></div></a>`;
                 });
             } else { resourcesContainer.innerHTML = "<p>Helpful resources will appear here.</p>"; }
-            const careerContainer = document.getElementById('career-paths-container');
-            careerContainer.innerHTML = '';
-            if (data.topCareerPaths && data.topCareerPaths.length > 0) {
-                const careerIcons = { tech: "cpu", medical: "activity", business: "dollar-sign", creative: "pen-tool", law: "award", social: "users", default: "briefcase" };
-                data.topCareerPaths.forEach(path => {
-                    const icon = careerIcons[path.icon] || careerIcons.default;
-                    careerContainer.innerHTML += `<div class="border rounded-lg p-4 card-hover"><div class="flex items-start"><div class="bg-gray-100 p-3 rounded-full mr-4"><i data-feather="${icon}" class="h-5 w-5"></i></div><div><h3 class="font-semibold text-lg">${path.career}</h3><p class="text-sm text-gray-600 mb-2">${path.description}</p><div class="flex items-center text-sm text-gray-500"><i data-feather="briefcase" class="h-4 w-4 mr-1.5"></i><span>${path.salary}</span></div></div></div></div>`;
-                });
-            } else { careerContainer.innerHTML = "<p>Your top career paths will appear here.</p>"; }
+            const skillsContainer = document.getElementById('skills-container');
+skillsContainer.innerHTML = '';
+if (data.keySkills && data.keySkills.length > 0) {
+    const skillIcons = { code: "code", 'bar-chart': "bar-chart-2", users: "users", edit: "edit-3", speaker: "mic", database: "database", default: "tool" };
+    data.keySkills.forEach(skill => {
+        const icon = skillIcons[skill.icon] || skillIcons.default;
+        skillsContainer.innerHTML += `
+            <div class="border rounded-lg p-4 bg-gray-50">
+                <div class="flex items-start">
+                    <div class="bg-gray-200 p-3 rounded-full mr-4">
+                        <i data-feather="${icon}" class="h-5 w-5 text-gray-700"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg mb-1">${skill.skill}</h3>
+                        <p class="text-gray-600 text-sm">${skill.description}</p>
+                    </div>
+                </div>
+            </div>`;
+    });
+} else {
+    skillsContainer.innerHTML = "<p>Your key skills to develop will appear here.</p>";
+}
             feather.replace();
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <button id="chat-fab" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-110 z-50">
-        <i data-feather="message-square" class="h-6 w-6"></i>
+    <div class="chatbot-container fixed bottom-6 right-6 z-50">
+    <div class="speech-bubble absolute bottom-full right-0 mb-3 w-48 bg-gray-800 text-white text-sm text-center rounded-lg py-2 px-3 shadow-lg">
+        Ask me anything!
+        <div class="absolute right-6 -bottom-2 w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-gray-800"></div>
+    </div>
+
+    <button id="chat-fab" class="bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-110 flex items-center justify-center h-16 w-16">
+        <i data-feather="message-square" class="h-8 w-8"></i>
     </button>
+</div>
     <div id="chat-window" class="hidden fixed bottom-24 right-6 w-full max-w-sm h-full max-h-[600px] bg-white rounded-xl shadow-2xl flex flex-col z-50 border">
         <div class="p-4 bg-blue-600 text-white rounded-t-xl flex justify-between items-center">
             <div><h3 class="font-bold">AI Career Counselor</h3><p class="text-xs text-blue-100">Ask me anything!</p></div>
@@ -184,7 +255,7 @@
 
     <script>
         (function() {
-            const GEMINI_API_KEY = "AIzaSyDJWClrc3oEfSa7NaEZXbO8UhTRaBOeJRQ";
+            const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE-D_Amk4";
             const fab = document.getElementById('chat-fab'), chatWindow = document.getElementById('chat-window'), closeBtn = document.getElementById('chat-close-btn'), messagesContainer = document.getElementById('chat-messages'), input = document.getElementById('chat-input'), sendBtn = document.getElementById('chat-send-btn');
             if (!fab) return;
             let chatHistory = [];

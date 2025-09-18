@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <!-- Android / Chrome -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CareerDisha">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
+    
+    <!-- Windows / Edge -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Details | CareerDisha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        /* Base styles from other pages for consistency */
+        @keyframes pop-in {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .content-section {
+            animation: pop-in 0.5s ease-out forwards;
+        }
+        #chat-window { transition: opacity 0.3s ease, transform 0.3s ease; }
+        #chat-close-btn { font-size: 1.5rem; line-height: 1; }
+        #chat-messages { display: flex; flex-direction: column; }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                     <a href="./index.html" class="flex-shrink-0 flex items-center">
+                        <i data-feather="compass" class="text-blue-600 h-8 w-8"></i>
+                        <span class="ml-2 text-xl font-bold text-blue-600">CareerDisha</span>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <a href="javascript:history.back()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition duration-300 inline-flex items-center">
+                        <i data-feather="arrow-left" class="h-4 w-4 mr-2"></i> Back to Roadmap
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="loading-container" class="text-center py-16">
+            <svg class="animate-spin h-12 w-12 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <h2 class="mt-4 text-2xl font-semibold text-gray-800">Generating Your Detailed Career Plan...</h2>
+            <p class="text-gray-600">Our AI is personalizing your path to success. This might take a moment.</p>
+        </div>
+
+        <div id="details-container" class="hidden">
+            </div>
+    </main>
+
+    <div id="chatbot-component" class="hidden">
+        <button id="chat-fab" class="fixed bottom-6 right-6 z-50 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-110 flex items-center justify-center h-16 w-16">
+            <i data-feather="message-square" class="h-8 w-8"></i>
+        </button>
+        <div id="chat-window" class="hidden fixed bottom-24 right-6 w-full max-w-sm h-full max-h-[600px] bg-white rounded-xl shadow-2xl flex flex-col z-50 border">
+            <div class="p-4 bg-blue-600 text-white rounded-t-xl flex justify-between items-center">
+                <div><h3 class="font-bold">AI Career Counselor</h3><p class="text-xs text-blue-100">Ask about this career plan</p></div>
+                <button id="chat-close-btn" class="text-blue-200 hover:text-white">&times;</button>
+            </div>
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50"></div>
+            <div class="p-4 border-t bg-white rounded-b-xl">
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="chat-input" placeholder="Your question here..." class="flex-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="chat-send-btn" class="p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"><i data-feather="send" class="h-5 w-5"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const careerTitle = urlParams.get('career');
+        
+        // Store the detailed plan globally for the chatbot to access
+        window.careerDetailsData = {};
+
+        if (!careerTitle) {
+            document.getElementById('loading-container').innerHTML = `
+                <h2 class="text-2xl font-semibold text-red-600">Error</h2>
+                <p class="text-gray-600">No career specified. Please go back and select a career path.</p>
+            `;
+            return;
+        }
+
+        generateCareerDetails(careerTitle);
+    });
+
+    async function generateCareerDetails(careerTitle) {
+        const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE"; // Replace with your key
+        // Retrieve student's original quiz answers for context
+        const quizResults = JSON.parse(localStorage.getItem('careerDishaResults') || '{}');
+        const studentContext = JSON.stringify(quizResults, null, 2);
+
+        const prompt = `
+            You are an expert career guidance counselor in India.
+            A student is interested in a career as a "${careerTitle}".
+            Their original quiz results are: ${studentContext}
+
+            Your task is to generate a comprehensive, actionable, and personalized roadmap for this student to excel in the field of "${careerTitle}".
+
+            Return ONLY a valid JSON object with the following structure:
+            {
+              "careerTitle": "${careerTitle}",
+              "summary": "A compelling and encouraging summary of the career path (2-3 sentences).",
+              "stepByStepPlan": [
+                {"stage": "High School (Class 11-12)", "description": "Specific subjects, exams (like JEE, NEET, CLAT), and skills to focus on."},
+                {"stage": "Undergraduate (Bachelor's Degree)", "description": "Recommended degrees, specialization, importance of internships, and projects."},
+                {"stage": "Postgraduate & Beyond (Master's/PhD)", "description": "When is it necessary? Top specializations and entrance exams (like CAT, GATE, GRE)."},
+                {"stage": "Early Career (First 1-3 Years)", "description": "Entry-level roles, importance of networking, and continuous learning."}
+              ],
+              "keySkills": [
+                {"skill": "Technical Skill 1", "description": "Brief explanation."},
+                {"skill": "Soft Skill 1", "description": "Brief explanation."},
+                {"skill": "Technical Skill 2", "description": "Brief explanation."}
+              ],
+              "topCompanies": ["Company A", "Company B", "Company C", "Company D"],
+              "recommendedResources": [
+                {"title": "Best Online Course Platform", "url": "https://www.coursera.org", "type": "course"},
+                {"title": "Essential Professional Network", "url": "https://www.linkedin.com", "type": "networking"},
+                {"title": "Top Industry Blog/News", "url": "https://www.example.com", "type": "reading"}
+              ],
+              "collegeSuggestions": [
+                {"name": "Govt. College of Engineering & Technology, Jammu", "location": "Jammu, J&K", "reason": "A top government choice for engineering aspirants in the region. Give priority to govt colleges in Jammu and Kashmir."},
+                {"name": "IIT Delhi", "location": "New Delhi", "reason": "A premier national institute known for its excellent faculty and placements."}
+              ]
+            }
+        `;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { response_mime_type: "application/json", temperature: 0.6 }
+                })
+            });
+
+            if (!response.ok) throw new Error(`API Error: ${response.status}`);
+            
+            const result = await response.json();
+            const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            const data = JSON.parse(jsonText);
+            
+            window.careerDetailsData = data; // Save for chatbot
+            displayCareerDetails(data);
+
+        } catch (error) {
+            console.error("Error generating career details:", error);
+            document.getElementById('loading-container').innerHTML = `
+                <h2 class="text-2xl font-semibold text-red-600">Analysis Failed</h2>
+                <p class="text-gray-600">There was an issue generating the details. Please try again later.</p>
+                <pre class="mt-4 text-left text-xs bg-gray-100 p-2 rounded">${error.message}</pre>
+            `;
+        }
+    }
+
+    function displayCareerDetails(data) {
+        const container = document.getElementById('details-container');
+        
+        // --- Plan HTML ---
+        const planHtml = data.stepByStepPlan.map((step, index) => `
+            <li class="mb-6 ml-6">            
+                <span class="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-8 ring-white">
+                    <i data-feather="map-pin" class="w-4 h-4 text-blue-600"></i>
+                </span>
+                <h3 class="flex items-center mb-1 text-lg font-semibold text-gray-900">${step.stage}</h3>
+                <p class="text-base font-normal text-gray-600">${step.description}</p>
+            </li>
+        `).join('');
+
+        // --- Skills HTML ---
+        const skillsHtml = data.keySkills.map(skill => `
+            <div class="p-4 bg-gray-50 border rounded-lg">
+                <h4 class="font-semibold text-gray-800">${skill.skill}</h4>
+                <p class="text-sm text-gray-600">${skill.description}</p>
+            </div>
+        `).join('');
+
+        // --- Companies HTML ---
+        const companiesHtml = data.topCompanies.map(company => `
+            <span class="inline-block bg-gray-100 text-gray-800 text-sm font-medium mr-2 mb-2 px-3 py-1.5 rounded-full">${company}</span>
+        `).join('');
+        
+        // --- Resources HTML ---
+        const resourceIcons = { course: 'play-circle', networking: 'users', reading: 'book-open', default: 'link' };
+        const resourcesHtml = data.recommendedResources.map(res => `
+            <a href="${res.url}" target="_blank" rel="noopener noreferrer" class="block p-4 border rounded-lg hover:shadow-md transition duration-200 hover:bg-white">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 mt-1"><i data-feather="${resourceIcons[res.type] || resourceIcons.default}" class="h-5 w-5 text-blue-500"></i></div>
+                    <div class="ml-3">
+                        <p class="font-semibold text-gray-800">${res.title}</p>
+                    </div>
+                </div>
+            </a>
+        `).join('');
+
+        // --- NEW: College Suggestions HTML ---
+        const collegesHtml = (data.collegeSuggestions || []).map(college => `
+            <div class="p-4 bg-gray-50 border rounded-lg">
+                <h4 class="font-semibold text-gray-800">${college.name}</h4>
+                <p class="text-xs text-gray-500 mb-1">${college.location}</p>
+                <p class="text-sm text-gray-600">${college.reason}</p>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <div class="bg-white rounded-xl shadow-md p-6 md:p-8 mb-8 content-section">
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">${data.careerTitle}</h1>
+                <p class="text-lg text-gray-600">${data.summary}</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-white rounded-xl shadow-md p-6 md:p-8 content-section" style="animation-delay: 100ms;">
+                        <h2 class="text-2xl font-semibold mb-6 text-gray-900">Your Step-by-Step Plan</h2>
+                        <ol class="relative border-l border-gray-200">                  
+                            ${planHtml}
+                        </ol>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-6 md:p-8 content-section" style="animation-delay: 200ms;">
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900">Top Companies Hiring</h2>
+                        <div>${companiesHtml}</div>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="bg-white rounded-xl shadow-md p-6 md:p-8 content-section" style="animation-delay: 300ms;">
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900">Key Skills to Develop</h2>
+                        <div class="space-y-4">${skillsHtml}</div>
+                    </div>
+
+                     <div class="bg-white rounded-xl shadow-md p-6 md:p-8 content-section" style="animation-delay: 400ms;">
+                        <h2 class="text-2xl font-semibold mb-4 text-gray-900">Recommended Resources</h2>
+                        <div class="space-y-3">${resourcesHtml}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-white rounded-xl shadow-md p-6 md:p-8 content-section" style="animation-delay: 500ms;">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-900">Top College Suggestions</h2>
+                <div class="grid md:grid-cols-2 gap-4">${collegesHtml}</div>
+            </div>
+        `;
+
+        // Hide loader, show content and chatbot
+        document.getElementById('loading-container').classList.add('hidden');
+        container.classList.remove('hidden');
+        document.getElementById('chatbot-component').classList.remove('hidden');
+        
+        feather.replace();
+        initializeChatbot();
+    }
+
+    // --- Chatbot Logic ---
+    function initializeChatbot() {
+        // NOTE: This key seems to have a typo, but leaving as is from your original file.
+        const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE-D_Amk4-D_Amk4-D_Amk4";
+        const fab = document.getElementById('chat-fab'), chatWindow = document.getElementById('chat-window'), closeBtn = document.getElementById('chat-close-btn'), messagesContainer = document.getElementById('chat-messages'), input = document.getElementById('chat-input'), sendBtn = document.getElementById('chat-send-btn');
+        if (!fab) return;
+        
+        let chatHistory = [];
+        
+        const addMessage = (sender, text) => {
+            const msg = document.createElement('div');
+            msg.className = `p-2 rounded-lg mb-2 max-w-xs ${sender === 'user' ? 'bg-blue-500 text-white self-end ml-auto' : 'bg-gray-200 text-gray-800 self-start mr-auto'}`;
+            msg.textContent = text;
+            messagesContainer.appendChild(msg);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+        
+        fab.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+            if (!chatWindow.classList.contains('hidden') && messagesContainer.children.length === 0) {
+                addMessage('bot', `Hello! How can I help you with your plan for becoming a ${window.careerDetailsData.careerTitle}?`);
+            }
+        });
+        
+        closeBtn.addEventListener('click', () => chatWindow.classList.add('hidden'));
+        
+        const sendMessage = async () => {
+            const userText = input.value.trim();
+            if (!userText) return;
+            addMessage('user', userText);
+            input.value = ''; input.disabled = true; sendBtn.disabled = true;
+            
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'p-2 rounded-lg mb-2 max-w-xs bg-gray-200 text-gray-500 self-start mr-auto';
+            typingIndicator.textContent = '...';
+            messagesContainer.appendChild(typingIndicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // Chatbot now has context of the detailed plan
+            const prompt = `
+                You are a career counselor AI. A student is looking at a detailed plan for a career in "${window.careerDetailsData.careerTitle}".
+                
+                THEIR DETAILED PLAN:
+                ${JSON.stringify(window.careerDetailsData, null, 2)}
+                
+                CONVERSATION HISTORY:
+                ${JSON.stringify(chatHistory)}
+                
+                Based on the plan and history, answer the user's question: "${userText}"
+            `;
+            
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 250 } })
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const result = await response.json();
+                const botText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that.";
+                chatHistory.push({ role: 'user', text: userText }); 
+                chatHistory.push({ role: 'bot', text: botText });
+                if (chatHistory.length > 4) chatHistory.splice(0, 2);
+                
+                typingIndicator.remove();
+                addMessage('bot', botText);
+            } catch (error) {
+                typingIndicator.remove();
+                addMessage('bot', "Sorry, I'm having trouble connecting.");
+            } finally {
+                input.disabled = false; sendBtn.disabled = false; input.focus();
+            }
+        };
+        
+        sendBtn.addEventListener('click', sendMessage);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+        feather.replace();
+    }
+    </script>
+
+</body>
+</html>
