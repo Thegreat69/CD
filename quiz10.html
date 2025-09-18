@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <!-- Android / Chrome -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
-    
-    <!-- iOS Safari -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CareerDisha">
-    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
-    
-    <!-- Windows / Edge -->
-    <meta name="msapplication-TileColor" content="#2563eb">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Career Quiz | CareerDisha</title>
@@ -335,7 +323,7 @@
             // read any existing extra answers from localStorage (phase2 will use this too)
             const extraAnswersLocal = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
             // combine for initial save/requests
-            const combinedAnswersInitial = { extraAnswers: extraAnswersLocal, quizAnswers: userAnswers };
+            const combinedAnswersInitial = { ...extraAnswersLocal, quizAnswers: userAnswers };
 
             if (phase !== "final") {
                 // ================= Phase 1 =================
@@ -510,6 +498,8 @@ const prompt = `
     2.  **streamRecommendations**: An array of exactly 3 stream recommendation objects (Science, Commerce, Arts). Each object must have keys for "stream", "matchPercentage" (a number between 20-95), and "reason" (a short explanation reflecting their answers).
     3.  **topCareerPaths**: An array of exactly 4 career path objects. Each object must have keys for "career", "description", "salary", AND "icon". For the "icon" key, choose the most relevant category from this list: [tech, medical, business, creative, law, social].
     4.  **careerWeb**: An object representing 3 different branching career paths with their steps, relevant to the student's choices.
+    5.  **recommendedResources**: An array of 2-4 helpful resources for a Class 10 student. Each resource must be an object with "title", "description", and a valid "url".
+
 
     Example of the required JSON output format:
     {
@@ -530,6 +520,7 @@ const prompt = `
           "Grow into roles like Senior Engineer or Tech Lead"
         ]
       }
+      "recommendedResources": [ { "title": "NCERT Official Website", "description": "Download textbooks and educational resources.", "url": "https://ncert.nic.in/" } ]
     }
 `;
 
@@ -576,7 +567,8 @@ try {
         roadmapSummary: parsedPhase2.roadmapSummary,
         streamRecommendations: parsedPhase2.streamRecommendations || [],
         topCareerPaths: parsedPhase2.topCareerPaths || [],
-        careerWeb: parsedPhase2.careerWeb
+        careerWeb: parsedPhase2.careerWeb,
+        recommendedResources: parsedPhase2.recommendedResources || []
     };
 
     localStorage.setItem("careerDishaResults", JSON.stringify(finalResults));

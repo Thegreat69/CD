@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Android / Chrome -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
-    
-    <!-- iOS Safari -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CareerDisha">
-    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
-    
-    <!-- Windows / Edge -->
-    <meta name="msapplication-TileColor" content="#2563eb">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Career Quiz | CareerDisha</title>
@@ -385,17 +373,6 @@
         const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
 
-            // Ensure combinedAnswers is always defined (works whether or not phase flows created it earlier)
-            const quizAnswers = JSON.parse(localStorage.getItem("careerDishaQuizAnswers") || "{}");
-            const extraAnswersFromStorage = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
-            const combinedAnswers = { quizAnswers, extraAnswers: extraAnswersFromStorage };
-
-
-            // read any existing extra answers from localStorage (phase2 will use this too)
-            const extraAnswersLocal = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
-            // combine for initial save/requests
-            const combinedAnswersInitial = { extraAnswers: extraAnswersLocal, quizAnswers: userAnswers };
-
         if (phase !== "final") {
             // ================= Phase 1: Generate Follow-up Questions =================
            const prompt = `
@@ -429,11 +406,7 @@ ${JSON.stringify(userAnswers, null, 2)}
                 })
             });
 
-if (!response.ok) { // Error handling
-    const errorBody = await response.text();
-    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
-}
-
+            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
             const result = await response.json();
             const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
             
@@ -474,26 +447,8 @@ extraQs = extraQs.slice(0, 10);
 
             localStorage.setItem("careerDishaExtraQuestions", JSON.stringify(extraQs));
             localStorage.setItem("careerDishaQuizAnswers", JSON.stringify(userAnswers));
-                localStorage.setItem("careerDishaExtraQuestions_rawGenerator", generatedText);
-                console.log("Saved normalized extra questions (phase1):", extraQs);
-
-                // Save to Supabase for history (phase initial)
-                await fetch(`${SUPABASE_URL}/rest/v1/quiz_results`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "apikey": SUPABASE_ANON_KEY,
-                        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-                    },
-                    body: JSON.stringify({
-                        phase: "initial",
-                        answers: userAnswers,
-                        extraQuestions: extraQs
-                    })
-                });
-
-                // Redirect to extra questions page (phase 1 complete)
-                window.location.href = "./questions.html?from=quiz10";
+            
+            window.location.href = "./questions.html?from=quiz12";
 
         } else {
             // ================= Phase 2: Final Analysis =================
@@ -539,11 +494,7 @@ extraQs = extraQs.slice(0, 10);
                 })
             });
 
-if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
-}
-
+            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
             const result = await response.json();
             const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
             
@@ -574,15 +525,9 @@ if (!response.ok) {
 
             window.location.href = "./dashboard12.html";
         }
-
     } catch (err) {
         console.error("Error during analysis:", err);
-    // FIX: Improved user-facing error message
-    if (err.message && err.message.includes("503")) {
-        alert("The AI model is currently busy and unable to process the request. Please wait a moment and try again.");
-    } else {
         alert("An error occurred during the analysis. Please check your internet connection and try again.");
-    }
         // Hide loading spinner and show quiz UI again on error
         document.getElementById('loading-container').classList.add('hidden');
         document.getElementById('progress-container').classList.remove('hidden');
