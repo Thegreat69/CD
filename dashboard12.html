@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Android / Chrome -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
-    
-    <!-- iOS Safari -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="CareerDisha">
-    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
-    
-    <!-- Windows / Edge -->
-    <meta name="msapplication-TileColor" content="#2563eb">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Senior Secondary Roadmap | CareerDisha</title>
@@ -62,7 +50,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-8 flex justify-between items-start md:items-center">
              <h1 class="text-3xl font-bold text-gray-900">Your Personalized Roadmap</h1>
-             <a href="./quiz10.html" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition duration-300 inline-flex items-center flex-shrink-0 mt-4 md:mt-0">
+             <a href="./quiz12.html" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition duration-300 inline-flex items-center flex-shrink-0 mt-4 md:mt-0">
                 <i data-feather="refresh-cw" class="h-4 w-4 mr-2"></i> Retake Quiz
             </a>
         </div>
@@ -81,14 +69,26 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div class="p-6 border-b border-gray-200">
-                    <h2 class="text-xl font-semibold text-gray-900">Your Stream Recommendations</h2>
-                </div>
-                <div class="p-6">
-                    <div class="grid md:grid-cols-3 gap-6" id="stream-recommendations-container">
-                        </div>
-                </div>
-            </div>
+    <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Key Timelines & Events</h2>
+    </div>
+    <div class="p-6">
+        <div id="timeline-container" class="space-y-4">
+            <p>Loading your key timelines...</p>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Personalized Resources</h2>
+    </div>
+    <div class="p-6">
+        <div id="resources-container" class="grid sm:grid-cols-2 gap-4">
+            <p>Loading your recommended resources...</p>
+        </div>
+    </div>
+</div>
             
             <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div class="p-6 border-b border-gray-200">
@@ -142,90 +142,264 @@
 
     // This part of your script loads the dashboard results from local storage
     document.addEventListener('DOMContentLoaded', () => {
-        updateUserNav(); // Run the function to set the user's name
+    updateUserNav(); // Run the function to set the user's name
 
-        let resultsData;
-        try {
-            resultsData = JSON.parse(localStorage.getItem('careerDishaResults') || "{}");
-        } catch {
-            resultsData = {};
-        }
-
-        if (!resultsData || !resultsData.roadmapSummary) {
-            resultsData = {
-                roadmapSummary: "Please take the quiz to generate your personalized roadmap.",
-                streamRecommendations: [
-                    { stream: "Science", matchPercentage: 0, reason: "Complete the quiz." },
-                    { stream: "Commerce", matchPercentage: 0, reason: "Complete the quiz." },
-                    { stream: "Arts", matchPercentage: 0, reason: "Complete the quiz." }
-                ],
-                topCareerPaths: [],
-                careerWeb: {}
-            };
-        }
-        
+    window.resultsData = {}; // Use window scope to make it accessible to the chatbot script
+    try {
+        window.resultsData = JSON.parse(localStorage.getItem('careerDishaResults') || "{}");
+    } catch {
+        window.resultsData = {};
+    }
+    
+    // Corrected fallback data
+    if (!window.resultsData || !window.resultsData.roadmapSummary) {
+        window.resultsData = {
+            roadmapSummary: "Please take the quiz to generate your personalized roadmap.",
+            topCareerPaths: [],
+            careerWeb: {},
+            keyTimeline: [],
+            recommendedResources: []
+        };
+    }
+    
+    populateDashboard(window.resultsData);
         populateDashboard(resultsData);
-    });
-        
-    // This function populates the dashboard with your quiz results. No changes needed here.
-    function populateDashboard(data) {
-        // 1. Populate Summary
-        document.getElementById('roadmap-container').innerHTML = data.roadmapSummary;
-        
-        // 2. Populate Career Branches
-        const flowchartContainer = document.getElementById('flowchart-container');
-        flowchartContainer.innerHTML = ''; 
-        const careerWeb = data.careerWeb;
+    
+        function populateDashboard(data) {
+    // 1. Populate Summary
+    const roadmapContainer = document.getElementById('roadmap-container');
+    if (roadmapContainer) {
+        roadmapContainer.innerHTML = data.roadmapSummary || "<p>Your personalized roadmap is being generated...</p>";
+    }
 
+    // 2. Populate Career Branches
+    const flowchartContainer = document.getElementById('flowchart-container');
+    if (flowchartContainer) {
+        flowchartContainer.innerHTML = '';
+        const careerWeb = data.careerWeb;
         if (careerWeb && typeof careerWeb === 'object' && Object.keys(careerWeb).length > 0) {
             Object.entries(careerWeb).forEach(([title, steps]) => {
-                const branchColumn = document.createElement('div');
-                branchColumn.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200 flex flex-col';
-
-                let stepsHtml = '';
+                let stepsArray = [];
                 if (Array.isArray(steps)) {
-                    steps.forEach(step => {
-                        stepsHtml += `<div class="flex items-start mb-3"><div class="flex-shrink-0 bg-blue-100 h-5 w-5 rounded-full flex items-center justify-center mr-3 mt-1 ring-4 ring-white"><i data-feather="arrow-right" class="text-blue-600 h-3 w-3"></i></div><p class="text-sm text-gray-700">${step}</p></div>`;
-                    });
+                    stepsArray = steps;
+                } else if (typeof steps === 'string') {
+                    stepsArray = steps.split('\n').filter(s => s.trim() !== '');
                 }
-                
-                branchColumn.innerHTML = `<h3 class="font-semibold text-center mb-4 text-blue-700">${title}</h3><div>${stepsHtml}</div>`;
-                flowchartContainer.appendChild(branchColumn);
+                const stepsHtml = stepsArray.map(step => `<div class="flex items-start mb-3"><div class="flex-shrink-0 bg-blue-100 h-5 w-5 rounded-full flex items-center justify-center mr-3 mt-1 ring-4 ring-white"><i data-feather="arrow-right" class="text-blue-600 h-3 w-3"></i></div><p class="text-sm text-gray-700">${step}</p></div>`).join('');
+                flowchartContainer.innerHTML += `<div class="bg-gray-50 rounded-lg p-4 border"><h3 class="font-semibold text-center mb-4 text-blue-700">${title}</h3><div>${stepsHtml}</div></div>`;
             });
         } else {
-            flowchartContainer.innerHTML = "<p class='col-span-full text-gray-600'>Your career branches will appear here after you complete the quiz.</p>";
+            flowchartContainer.innerHTML = "<p class='col-span-full text-gray-600'>Your career branches will appear here.</p>";
         }
+    }
 
-        // 3. Populate Stream Recommendations
-        const streamContainer = document.getElementById('stream-recommendations-container');
-        streamContainer.innerHTML = '';
-        const streamColors = { Science: '#3B82F6', Commerce: '#10B981', Arts: '#8B5CF6' };
-        const streamBgColors = { Science: '#EFF6FF', Commerce: '#ECFDF5', Arts: '#F5F3FF' };
-        data.streamRecommendations.sort((a, b) => b.matchPercentage - a.matchPercentage).forEach(rec => {
-            const radius = 15.9155, circumference = 2 * Math.PI * radius;
-            const offset = circumference - (rec.matchPercentage / 100) * circumference;
-            const cardHtml = `<div class="border rounded-lg p-4 text-center"><div class="relative w-24 h-24 mx-auto mb-4"><svg class="w-full h-full" viewBox="0 0 36 36"><path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${streamBgColors[rec.stream] || '#E5E7EB'}" stroke-width="3"/><path class="progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${streamColors[rec.stream] || '#6B7280'}" stroke-width="3" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/><text x="18" y="21.5" text-anchor="middle" font-size="8" fill="${streamColors[rec.stream] || '#6B7280'}" font-weight="bold">${rec.matchPercentage}%</text></svg></div><h3 class="text-lg font-medium" style="color: ${streamColors[rec.stream] || '#1F2937'}">${rec.stream}</h3><p class="text-sm text-gray-600 mt-1">${rec.reason}</p></div>`;
-            streamContainer.innerHTML += cardHtml;
-        });
-        
-        // 4. Populate Top Career Paths
-        const careerContainer = document.getElementById('career-paths-container');
+    // 3. Populate Key Timelines
+    const timelineContainer = document.getElementById('timeline-container');
+    if (timelineContainer) {
+        timelineContainer.innerHTML = '';
+        const timelineEvents = data.keyTimeline;
+        const eventIcons = { exam: 'edit-3', event: 'gift' };
+        const eventColors = { exam: 'text-purple-600 bg-purple-100', event: 'text-green-600 bg-green-100' };
+        if (timelineEvents && timelineEvents.length > 0) {
+            timelineEvents.forEach(event => {
+                timelineContainer.innerHTML += `<div class="flex items-center p-3 bg-gray-50 rounded-lg border"><div class="flex-shrink-0 h-10 w-10 rounded-full flex items-center justify-center ${eventColors[event.type] || 'bg-gray-100'}"><i data-feather="${eventIcons[event.type] || 'calendar'}" class="h-5 w-5"></i></div><div class="ml-4 flex-grow"><p class="font-semibold text-gray-800">${event.title}</p></div><div class="text-sm font-medium text-gray-600 text-right">${event.date}</div></div>`;
+            });
+        } else {
+            timelineContainer.innerHTML = "<p class='text-gray-600'>Important timelines will appear here.</p>";
+        }
+    }
+    
+    // 4. Populate Personalized Resources (This part is now added back)
+    const resourcesContainer = document.getElementById('resources-container');
+    if (resourcesContainer) {
+        resourcesContainer.innerHTML = '';
+        const resources = data.recommendedResources;
+        if (resources && resources.length > 0) {
+            resources.forEach(resource => {
+                resourcesContainer.innerHTML += `
+                    <a href="${resource.url}" target="_blank" rel="noopener noreferrer" class="block p-4 border rounded-lg hover:shadow-md card-hover">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mt-1"><i data-feather="link" class="h-4 w-4 text-blue-500"></i></div>
+                            <div class="ml-3">
+                                <p class="font-semibold text-gray-800">${resource.title}</p>
+                                <p class="text-sm text-gray-600">${resource.description}</p>
+                            </div>
+                        </div>
+                    </a>`;
+            });
+        } else {
+            resourcesContainer.innerHTML = "<p class='text-gray-600'>Helpful resources will appear here.</p>";
+        }
+    }
+
+    // 5. Populate Top Career Paths
+    const careerContainer = document.getElementById('career-paths-container');
+    if (careerContainer) {
         careerContainer.innerHTML = '';
+        const careerPaths = data.topCareerPaths;
         const careerIcons = { tech: "cpu", medical: "activity", business: "dollar-sign", creative: "pen-tool", law: "award", social: "users", default: "briefcase" };
-
-        if (!data.topCareerPaths || data.topCareerPaths.length === 0) {
-            careerContainer.innerHTML = `<p class="text-gray-600 col-span-2">Complete the quiz to see top career paths.</p>`;
-        } else {
-            data.topCareerPaths.forEach(path => {
+        if (careerPaths && careerPaths.length > 0) {
+            careerPaths.forEach(path => {
                 const icon = careerIcons[path.icon] || careerIcons.default;
-                const cardHtml = `<div class="border border-gray-200 rounded-lg p-4 card-hover transition-all duration-300"><div class="flex items-start"><div class="bg-gray-100 p-3 rounded-full mr-4 flex-shrink-0"><i data-feather="${icon}" class="text-gray-600 h-5 w-5"></i></div><div><h3 class="font-semibold text-lg mb-1">${path.career}</h3><p class="text-gray-600 text-sm mb-2">${path.description}</p><div class="flex items-center text-sm text-gray-500"><i data-feather="briefcase" class="h-4 w-4 mr-1.5"></i><span>${path.salary}</span></div></div></div></div>`;
-                careerContainer.innerHTML += cardHtml;
+                careerContainer.innerHTML += `<div class="border rounded-lg p-4 card-hover"><div class="flex items-start"><div class="bg-gray-100 p-3 rounded-full mr-4"><i data-feather="${icon}" class="text-gray-600 h-5 w-5"></i></div><div><h3 class="font-semibold text-lg mb-1">${path.career}</h3><p class="text-gray-600 text-sm mb-2">${path.description}</p><div class="flex items-center text-sm text-gray-500"><i data-feather="briefcase" class="h-4 w-4 mr-1.5"></i><span>${path.salary}</span></div></div></div></div>`;
             });
+        } else {
+            careerContainer.innerHTML = "<p class='text-gray-600'>Your top career paths will appear here.</p>";
         }
-        
-        feather.replace();
-    }  
+    }
+    
+    feather.replace();
+}
+});
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <button id="chat-fab" class="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition transform hover:scale-110 z-50">
+    <i data-feather="message-square" class="h-6 w-6"></i>
+</button>
+
+<div id="chat-window" class="hidden fixed bottom-24 right-6 w-full max-w-sm h-full max-h-[600px] bg-white rounded-xl shadow-2xl flex flex-col z-50 border">
+    <div class="p-4 bg-blue-600 text-white rounded-t-xl flex justify-between items-center">
+        <div>
+            <h3 class="font-bold">AI Career Counselor</h3>
+            <p class="text-xs text-blue-100">Ask me anything about your results!</p>
+        </div>
+        <button id="chat-close-btn" class="text-blue-200 hover:text-white">&times;</button>
+    </div>
+
+    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50">
+        </div>
+
+    <div class="p-4 border-t bg-white rounded-b-xl">
+        <div class="flex items-center space-x-2">
+            <input type="text" id="chat-input" placeholder="Type your question..." class="flex-1 w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="chat-send-btn" class="p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                <i data-feather="send" class="h-5 w-5"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    // --- CONFIG ---
+    const GEMINI_API_KEY = "AIzaSyDJWClrc3oEfSa7NaEZXbO8UhTRaBOeJRQ"; // Use the same key from your quiz files
+
+    // --- DOM ELEMENTS ---
+    const fab = document.getElementById('chat-fab');
+    const chatWindow = document.getElementById('chat-window');
+    const closeBtn = document.getElementById('chat-close-btn');
+    const messagesContainer = document.getElementById('chat-messages');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+
+    if (!fab) return; // Don't run if the chatbot HTML isn't on the page
+
+    // --- STATE ---
+    let chatHistory = [];
+
+    // --- FUNCTIONS ---
+
+    // Toggles the chat window visibility
+    const toggleChatWindow = () => {
+        chatWindow.classList.toggle('hidden');
+        if (!chatWindow.classList.contains('hidden')) {
+            addMessage('bot', "Hello! I'm your AI Career Counselor. Ask me anything about your personalized roadmap.");
+        }
+    };
+
+    // Adds a message to the chat UI
+    const addMessage = (sender, text) => {
+        const messageEl = document.createElement('div');
+        messageEl.className = `p-2 rounded-lg mb-2 max-w-xs ${
+            sender === 'user' 
+            ? 'bg-blue-500 text-white self-end ml-auto' 
+            : 'bg-gray-200 text-gray-800 self-start mr-auto'
+        }`;
+        messageEl.textContent = text;
+        messagesContainer.appendChild(messageEl);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+    };
+
+    // Main function to handle sending a message
+    const sendMessage = async () => {
+        const userText = input.value.trim();
+        if (!userText) return;
+
+        addMessage('user', userText);
+        input.value = '';
+        input.disabled = true;
+        sendBtn.disabled = true;
+
+        // Add a "typing..." indicator
+        const typingIndicator = document.createElement('div');
+        typingIndicator.id = 'typing-indicator';
+        typingIndicator.className = 'p-2 rounded-lg mb-2 max-w-xs bg-gray-200 text-gray-500 self-start mr-auto';
+        typingIndicator.textContent = '...';
+        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Construct the prompt for the AI
+        const prompt = `
+            You are a helpful and friendly AI Career Counselor. Your goal is to help a student understand their personalized career roadmap.
+            
+            BACKGROUND CONTEXT (The student's quiz results):
+            ${JSON.stringify(window.resultsData, null, 2)}
+
+            CONVERSATION HISTORY:
+            ${JSON.stringify(chatHistory)}
+
+            Based on all the information above, answer the following user question concisely and helpfully.
+            
+            USER QUESTION: "${userText}"
+        `;
+        
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 250 }
+                })
+            });
+
+            if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+            const result = await response.json();
+            const botText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't process that.";
+
+            // Update chat history for context in next message
+            chatHistory.push({ role: 'user', text: userText });
+            chatHistory.push({ role: 'bot', text: botText });
+            if (chatHistory.length > 6) chatHistory.splice(0, 2); // Keep history short
+
+            // Remove typing indicator and add bot's message
+            document.getElementById('typing-indicator').remove();
+            addMessage('bot', botText);
+
+        } catch (error) {
+            console.error("Chatbot API error:", error);
+            document.getElementById('typing-indicator').remove();
+            addMessage('bot', "Sorry, I'm having trouble connecting. Please try again in a moment.");
+        } finally {
+            input.disabled = false;
+            sendBtn.disabled = false;
+            input.focus();
+        }
+    };
+    
+    // --- EVENT LISTENERS ---
+    fab.addEventListener('click', toggleChatWindow);
+    closeBtn.addEventListener('click', () => chatWindow.classList.add('hidden'));
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // We need to re-run feather.replace() to render the new icons
+    feather.replace();
+
+})();
+</script>
 </body>
 </html>

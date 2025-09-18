@@ -73,91 +73,146 @@
     <script>
     // --- quiz data (unchanged) ---
     const quizData = [
-        {
-            id: 1,
-            question: "Which class are you currently in?",
-            subtext: "Select one.",
-            type: 'single',
-            options: [
-                "Class 10",
-                "Class 12",
-                "College (UG)",
-            ]
-        },
-        {
-            id: 2,
-            question: "Which subjects or areas do you enjoy the most?",
-            subtext: "Select all that apply.",
-            type: 'multiple',
-            options: [
-                "Science & Technology (Maths, Physics, Biology, Computers)",
-                "Business & Finance (Accounts, Economics, Entrepreneurship)",
-                "Arts & Humanities (History, Literature, Philosophy)",
-                "Social Sciences / Law (Civics, Sociology, Political Science)",
-                "Creative / Media / Design (Drawing, Writing, Acting, Editing)",
-                "Hands-on / Vocational (Mechanical, Electrical, IT, Crafts)"
-            ]
-        },
-        {
-            id: 3,
-            question: "What is your preferred future goal?",
-            subtext: "Select one.",
-            type: 'single',
-            options: [
-                "Get a job soon after graduation",
-                "Pursue higher education (Masters/PhD/UPSC/Other exams)",
-                "Start my own business / entrepreneurship",
-                "Not sure yet"
-            ]
-        },
-        {
-            id: 4,
-            question: "How do you prefer learning and working?",
-            subtext: "Select one.",
-            type: 'single',
-            options: [
-                "Practical / Hands-on (labs, field work, tools)",
-                "Analytical / Problem-solving (maths, coding, research)",
-                "Creative / Expressive (design, content, art, performance)",
-                "Helping others / Social impact (teaching, healthcare, community work)"
-            ]
-        },
-        {
-            id: 5,
-            question: "Do you want to study in your local area (government colleges nearby) or are you open to moving outside?",
-            subtext: "Select one.",
-            type: 'single',
-            options: [
-                "Prefer local government colleges",
-                "Open to outside options",
-                "Not sure"
-            ]
-        },
-        {
-            id: 6,
-            question: "How long are you willing to study?",
-            subtext: "Select one.",
-            type: 'single',
-            options: [
-                "Short-term (1–2 years, diploma/skill courses)",
-                "Graduation (3 years, BA/BSc/BCom, etc.)",
-                "Long-term (5+ years, MBBS, Engineering, Law, etc.)",
-                "Not sure"
-            ]
-        },
-        {
-            id: 7,
-            question: "What motivates you the most when choosing a career?",
-            subtext: "Select one.",
-            type: 'single',
-            options: [
-                "Job security & stable salary",
-                "Passion & personal interest",
-                "Prestige & recognition",
-                "Social impact (helping others, contributing to society)"
-            ]
-        }
+    {
+        id: 1,
+        question: "Which subjects or topics do you enjoy the most in your current stream?",
+        subtext: "Select all that apply.",
+        type: "multiple",
+        options: [
+        "Mathematics & Logical Problem Solving",
+        "Physics & Chemistry",
+        "Biology & Life Sciences",
+        "Economics / Business Studies / Accounts",
+        "History / Political Science / Sociology",
+        "Languages / Literature / Philosophy",
+        "Creative fields (Arts, Design, Media, Performing Arts)",
+        "Technology (Coding, AI, IT, Engineering basics)"
+        ]
+    },
+    {
+        id: 2,
+        question: "Which entrance or competitive exams are you focusing on?",
+        subtext: "Select all that apply.",
+        type: "multiple",
+        options: [
+        "Engineering (JEE Main/Advanced, State CETs)",
+        "Medical (NEET, AIIMS, etc.)",
+        "Commerce/Management (CA, CS, CMA, CUET-Business)",
+        "Law / Civil Services (CLAT, UPSC foundation, etc.)",
+        "Design/Creative (NIFT, NID, UCEED, etc.)",
+        "Other entrance tests (CUET, State exams, etc.)",
+        "Not preparing for any exam yet"
+        ]
+    },
+    {
+        id: 3,
+        question: "What do you see yourself doing after Class 12?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "Pursuing Engineering / Technology",
+        "Becoming a Doctor / Healthcare professional",
+        "Going into Business / Finance / Management",
+        "Studying Arts / Humanities / Social Sciences",
+        "Preparing for Law / Civil Services / Government roles",
+        "Building a career in Creative fields (Design, Media, Arts)",
+        "Not sure yet, still exploring"
+        ]
+    },
+    {
+        id: 4,
+        question: "What motivates you the most when choosing a career?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "High salary & financial stability",
+        "Prestige, recognition & respect",
+        "Passion & personal interest",
+        "Helping others / creating social impact",
+        "Work–life balance & job security"
+        ]
+    },
+    {
+        id: 5,
+        question: "Where would you prefer to study after Class 12?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "Nearby / local colleges",
+        "Top institutions anywhere in India",
+        "Abroad (international universities)",
+        "Not decided yet"
+        ]
+    },
+    {
+        id: 6,
+        question: "How long are you willing to continue your education?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "Short-term (1–3 years, diploma/degree)",
+        "Medium-term (4–5 years, professional degrees like Engineering, MBBS, Law)",
+        "Long-term (7+ years, specialization / PhD / advanced research)",
+        "Not sure yet"
+        ]
+    },
+    {
+        id: 7,
+        question: "Have you started planning your career path already?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "Yes, I have a clear plan",
+        "I have some ideas but still exploring",
+        "Not yet, I’m looking for proper guidance"
+        ]
+    },
+    {
+        id: 8,
+        question: "Which skills do you feel you are strongest in?",
+        subtext: "Select all that apply.",
+        type: "multiple",
+        options: [
+        "Analytical & Logical Thinking",
+        "Practical / Hands-on Skills",
+        "Communication & Public Speaking",
+        "Creativity & Innovation",
+        "Leadership & Teamwork",
+        "Research & Writing",
+        "Problem-solving under pressure"
+        ]
+    },
+    {
+        id: 9,
+        question: "Which broad career sector excites you the most?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "Technology & Engineering",
+        "Medical & Healthcare",
+        "Business, Finance & Management",
+        "Government, Law & Civil Services",
+        "Arts, Design & Media",
+        "Education & Social Sciences",
+        "Still undecided"
+        ]
+    },
+    {
+        id: 10,
+        question: "What is your biggest challenge right now in career planning?",
+        subtext: "Select one.",
+        type: "single",
+        options: [
+        "Too many options, I feel confused",
+        "Lack of proper guidance / mentorship",
+        "Uncertainty about exams and admissions",
+        "Financial constraints",
+        "Balancing board exams with entrance prep",
+        "Not sure where to start"
+        ]
+    }
     ];
+
 
     // --- state / DOM refs ---
     let currentQuestionIndex = 0;
@@ -320,16 +375,15 @@
 
     // --- main finishQuiz with both Phase 1 & Phase 2 logic ---
     async function finishQuiz() {
-        // Hide quiz UI, show loading spinner
-        quizContainer.classList.add('hidden');
-        document.getElementById('navigation-buttons').classList.add('hidden');
-        document.getElementById('loading-container').classList.remove('hidden');
+    // Hide quiz UI, show loading spinner
+    quizContainer.classList.add('hidden');
+    document.getElementById('navigation-buttons').classList.add('hidden');
+    document.getElementById('loading-container').classList.remove('hidden');
 
-        try {
-            // NOTE: the keys below are the ones you had in the original code (kept as requested).
-            const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE";
-            const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
-            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
+    try {
+        const GEMINI_API_KEY = "AIzaSyBvR0vZe9wRr7ul6diO45SaueK8-D_Amk4";
+        const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
 
             // Ensure combinedAnswers is always defined (works whether or not phase flows created it earlier)
             const quizAnswers = JSON.parse(localStorage.getItem("careerDishaQuizAnswers") || "{}");
@@ -342,146 +396,84 @@
             // combine for initial save/requests
             const combinedAnswersInitial = { extraAnswers: extraAnswersLocal, quizAnswers: userAnswers };
 
-            if (phase !== "final") {
-                // ================= Phase 1 =================
-                // Ask Gemini to generate follow-up questions
-        const prompt = `
-    You are an expert career counselor for students in Jammu & Kashmir, India, who are currently in Class 11 or 12. The current date is September 17, 2025.
-    Based on the student's combined quiz answers, generate a personalized career roadmap focusing on preparation during and steps after senior secondary school.
+        if (phase !== "final") {
+            // ================= Phase 1: Generate Follow-up Questions =================
+           const prompt = `
+You are an expert career counselor. 
+Your task is to generate EXACTLY 10 follow-up questions for a Class 11/12 student.
 
-    ***
-    **Student's Answers:**
-    ${JSON.stringify(combinedAnswers, null, 2)}
-    ***
+⚠️ Rules:
+- All 10 must be **multiple-choice** (no text-only questions).
+- Each must have **3–5 options**.
+- Each must be marked with "type": "single" or "multiple".
+- Do not include any free-text or open-ended questions.
 
-    Your task is to return ONLY a JSON object with three keys: "roadmapSummary", "topCareerPaths", and "careerWeb".
+Return ONLY valid JSON in this format:
+{
+  "extraQuestions": [
+    { "id": 101, "question": "Sample Q?", "type": "single", "options": ["A","B","C"] }
+  ]
+}
 
-    1.  **roadmapSummary**: A personalized summary (~150 words), formatted as an HTML string with a \`<ul>\` list. This summary MUST provide advice relevant to both grades. For an 11th grader, suggest important subjects to focus on. For a 12th grader, focus on competitive exams (JEE, NEET, CUET, etc.) and application timelines.
-    2.  **topCareerPaths**: An array of exactly 4 career path objects. Each object must have keys for "career", "description", "salary", AND "icon". For the "icon" key, choose the most relevant category from this list: [tech, medical, business, creative, law, social].
-    3.  **careerWeb**: An object representing 2-3 different branching career paths with their steps, starting from after Class 12.
-
-    Example of the required JSON output format:
-    {
-      "roadmapSummary": "With your interest in Science, it's crucial to build a strong foundation. Here’s a roadmap for you:<ul><li>If in Class 11, master the core concepts of Physics and Chemistry, as they are essential for all entrance exams.</li><li>If in Class 12, your priority should be preparing for the JEE Main and Advanced exams alongside your board exams.</li><li>Regardless of your grade, start exploring different engineering branches to find your passion.</li></ul>",
-      "topCareerPaths": [
-        { 
-          "career": "Data Scientist", 
-          "description": "Analyze complex data to find trends and insights.", 
-          "salary": "₹6,00,000 - ₹20,00,000 p.a.",
-          "icon": "tech" 
-        }
-      ],
-      "careerWeb": {
-        "Path via State Entrance Test (JKCET)": [
-          "Focus on your Class 12 board syllabus",
-          "Prepare and qualify in the JKCET exam",
-          "Get admission into a B.E. in Civil Engineering at a top J&K college",
-          "Work in public sector roles or infrastructure development"
-        ]
-      }
-    }
+Student's answers so far:
+${JSON.stringify(userAnswers, null, 2)}
 `;
 
-                const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY,
-    {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-            generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 800,
-                response_mime_type: "application/json"
-            }
-        })
-    }
-);
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 800, response_mime_type: "application/json" }
+                })
+            });
 
 if (!response.ok) { // Error handling
     const errorBody = await response.text();
     throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
 }
 
-const result = await response.json();
-// Correct way to get the response text from Gemini
-const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            const result = await response.json();
+            const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            let parsedPhase1;
+            try {
+                const jsonString = generatedText.substring(generatedText.indexOf('{'), generatedText.lastIndexOf('}') + 1);
+                parsedPhase1 = JSON.parse(jsonString);
+            } catch (e) {
+                console.error("Failed to parse Gemini output as JSON (phase1):", e, generatedText);
+                alert("The AI response was not in the correct format. Please try again.");
+                document.getElementById('loading-container').classList.add('hidden');
+                return;
+            }
+            
+            // ✅ Ensure we ONLY keep MCQs with options
+let extraQs = parsedPhase1.extraQuestions || [];
 
-                // --- robust parsing + normalization for extraQuestions ---
-                let parsedPhase1;
-                try {
-                    // Clean the raw text before parsing to handle potential model artifacts
-                    const startIndex = generatedText.indexOf('{');
-                    const endIndex = generatedText.lastIndexOf('}');
-                    if (startIndex === -1 || endIndex === -1 || endIndex < startIndex) {
-                        throw new Error("Could not find a valid JSON object in the response.");
-                    }
-                    const jsonString = generatedText.substring(startIndex, endIndex + 1);
-                    parsedPhase1 = JSON.parse(jsonString);
-                } catch (e) {
-                    console.error("Failed to parse Gemini output as JSON (phase1):", e, generatedText);
-                    // If parsing fails, alert the user and stop to prevent further errors
-                    alert("The AI response was not in the correct format. Please try again.");
-                    // You might want to hide the loading spinner here as well
-                    document.getElementById('loading-container').classList.add('hidden');
-                    return; // Stop execution
-                }
+// ✅ Step 1: filter out any invalid/text-only questions
+extraQs = extraQs.filter(q => Array.isArray(q.options) && q.options.length > 0);
 
-                // Try different possible shapes and normalize to an array
-                let extraQs = parsedPhase1.extraQuestions || parsedPhase1.extra_questions || parsedPhase1.extra || parsedPhase1;
+// ✅ Step 2: pad until exactly 10
+while (extraQs.length < 10) {
+  extraQs.push({
+    id: 200 + extraQs.length,
+    question: `Backup Question ${extraQs.length + 1}`,
+    type: "single",
+    options: ["Option A", "Option B", "Option C", "Option D"]
+  });
+}
 
-                if (typeof extraQs === "string") {
-                    // sometimes the model returns a JSON string inside the JSON
-                    try { extraQs = JSON.parse(extraQs); } catch (err) { /* leave as string */ }
-                }
+// ✅ Step 3: trim if more than 10
+extraQs = extraQs.slice(0, 10);
 
-                // If still an object containing the array:
-                if (extraQs && typeof extraQs === "object" && !Array.isArray(extraQs)) {
-                    if (Array.isArray(extraQs.extraQuestions)) extraQs = extraQs.extraQuestions;
-                    else {
-                        // wrap single-question object into array
-                        extraQs = [extraQs];
-                    }
-                }
 
-                // Ensure it's an array
-                if (!Array.isArray(extraQs)) extraQs = [];
+// Trim if Gemini gave more than 10
+extraQs = extraQs.slice(0, 10);
 
-                // Normalize entries: ensure options is an array of strings
-                extraQs = extraQs.map((q, idx) => {
-                    if (typeof q === "string") {
-                        // fallback: treat as a question string with no options
-                        return { id: 100000 + idx, question: String(q).trim(), type: "single", options: [] };
-                    }
 
-                    const id = q.id || q.questionId || q.qid || (100000 + idx);
-                    const questionText = q.question || q.prompt || q.text || q.q || "Untitled question";
-                    const qtype = (q.type || q.qtype || "single").toString().toLowerCase().includes("multi") ? "multiple" : (q.type === "multiple" ? "multiple" : "single");
-
-                    // Accept many possible keys for options
-                    let optionsRaw = q.options || q.choices || q.answers || q.optionsList || q.choicesList || "";
-
-                    let options = [];
-                    if (Array.isArray(optionsRaw)) {
-                        options = optionsRaw.map(o => String(o).trim()).filter(Boolean);
-                    } else if (typeof optionsRaw === "string") {
-                        // split by newlines, commas, bullets — common model outputs
-                        options = optionsRaw.split(/[\r\n;•·\u2022,\/|]+/).map(s => s.trim()).filter(Boolean);
-                    }
-
-                    return {
-                        id,
-                        question: questionText,
-                        type: qtype,
-                        options
-                    };
-                });
-
-                // Save normalized results locally & debug
-                localStorage.setItem("careerDishaExtraQuestions", JSON.stringify(extraQs));
-                localStorage.setItem("careerDishaQuizAnswers", JSON.stringify(userAnswers));
+            localStorage.setItem("careerDishaExtraQuestions", JSON.stringify(extraQs));
+            localStorage.setItem("careerDishaQuizAnswers", JSON.stringify(userAnswers));
                 localStorage.setItem("careerDishaExtraQuestions_rawGenerator", generatedText);
                 console.log("Saved normalized extra questions (phase1):", extraQs);
 
@@ -503,123 +495,101 @@ const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
                 // Redirect to extra questions page (phase 1 complete)
                 window.location.href = "./questions.html?from=quiz10";
 
-} else {
-    // Get all answers from local storage
-const quizAnswers = JSON.parse(localStorage.getItem("careerDishaQuizAnswers") || "{}");
-const extraAnswersFromStorage = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
-const combinedAnswers = { quizAnswers, extraAnswers: extraAnswersFromStorage };
+        } else {
+            // ================= Phase 2: Final Analysis =================
+            
+            // --- THIS WAS THE MISSING PART ---
+            // These lines define the combinedAnswers variable before it's used.
+            const quizAnswers = JSON.parse(localStorage.getItem("careerDishaQuizAnswers") || "{}");
+            const extraAnswers = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
+            const combinedAnswers = { quizAnswers, extraAnswers };
+            // --- END OF FIX ---
 
-// CORRECTED PROMPT: Now dynamically includes the student's answers.
-const prompt = `
-    You are an expert career counselor for students in Jammu & Kashmir, India. The current date is September 17, 2025.
-    Based on the student's combined quiz answers provided below, generate a personalized career roadmap.
+            const prompt = `
+    You are an expert career counselor for students in Jammu & Kashmir, India, who are in Class 11 or 12. The current date is September 17, 2025.
+    Based on the student's answers, generate a personalized roadmap.
 
     ***
     **Student's Answers:**
     ${JSON.stringify(combinedAnswers, null, 2)}
     ***
 
-    Your task is to return ONLY a JSON object with four keys: "roadmapSummary", "streamRecommendations", "topCareerPaths", and "careerWeb".
+    Your task is to return ONLY a JSON object with five keys: "roadmapSummary", "topCareerPaths", "careerWeb", "keyTimeline", and "recommendedResources".
 
-    1.  **roadmapSummary**: A personalized summary for the student (~200 words), formatted as an HTML string with a \`<ul>\` list, directly addressing their answers.
-    2.  **streamRecommendations**: An array of exactly 3 stream recommendation objects (Science, Commerce, Arts). Each object must have keys for "stream", "matchPercentage" (a number between 20-95), and "reason" (a short explanation reflecting their answers).
-    3.  **topCareerPaths**: An array of exactly 4 career path objects. Each object must have keys for "career", "description", "salary", AND "icon". For the "icon" key, choose the most relevant category from this list: [tech, medical, business, creative, law, social].
-    4.  **careerWeb**: An object representing 3 different branching career paths with their steps, relevant to the student's choices.
+    1.  **roadmapSummary**: A personalized summary (~150 words) focusing on advice for Class 11/12.
+    2.  **topCareerPaths**: An array of 4 career path objects, each with "career", "description", "salary", and an "icon".
+    3.  **careerWeb**: An object representing 2-3 different branching career paths.
+    4.  **keyTimeline**: An array of 3-4 upcoming events. Each event must be an object with "title", "date", and "type" ('exam' or 'event').
+    5.  **recommendedResources**: An array of 2-4 helpful resources. Each resource must be an object with "title", "description", and a real, valid "url".
 
     Example of the required JSON output format:
     {
-      "topCareerPaths": [
-        { 
-          "career": "Software Engineer", 
-          "description": "Design and build software applications for various platforms.", 
-          "salary": "₹5,00,000 - ₹12,00,000 p.a.",
-          "icon": "tech" 
-        }
-      ],
-      "careerWeb": {
-        "Engineering Path (via JEE)": [
-          "Excel in Class 12 with PCM",
-          "Qualify the JEE Main & Advanced exams",
-          "Pursue a B.Tech in Computer Science",
-          "Start as a Junior Developer",
-          "Grow into roles like Senior Engineer or Tech Lead"
-        ]
-      }
+      "roadmapSummary": "...", "topCareerPaths": [], "careerWeb": {},
+      "keyTimeline": [ { "title": "JEE Main 2026 Registration", "date": "Nov 2025", "type": "exam" } ],
+      "recommendedResources": [ { "title": "NTA Official Website", "description": "Official source for JEE, NEET, CUET dates.", "url": "https://nta.ac.in/" } ]
     }
 `;
 
-    const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + GEMINI_API_KEY,
-    {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: prompt }] }],
-            generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 2048,
-                response_mime_type: "application/json"
-            }
-        })
-    }
-);
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 2048, response_mime_type: "application/json" }
+                })
+            });
 
 if (!response.ok) {
     const errorBody = await response.text();
     throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
 }
 
-const result = await response.json();
-const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            const result = await response.json();
+            const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            let parsedPhase2;
+            try {
+                const jsonString = generatedText.substring(generatedText.indexOf('{'), generatedText.lastIndexOf('}') + 1);
+                parsedPhase2 = JSON.parse(jsonString);
+            } catch (e) {
+                console.error("Failed to parse Gemini output (phase2):", e, generatedText);
+                parsedPhase2 = { roadmapSummary: "Error generating roadmap.", topCareerPaths: [], careerWeb: {}, keyTimeline: [] };
+            }
 
-let parsedPhase2;
-try {
-    const startIndex = generatedText.indexOf('{');
-    const endIndex = generatedText.lastIndexOf('}');
-    if (startIndex === -1 || endIndex === -1) throw new Error("No JSON object found");
-    const jsonString = generatedText.substring(startIndex, endIndex + 1);
-    parsedPhase2 = JSON.parse(jsonString);
-} catch (e) {
-    console.error("Failed to parse Gemini output (phase2):", e, generatedText);
-    parsedPhase2 = {
-        roadmapSummary: "We had trouble generating your personalized roadmap.",
-        topCareerPaths: [],
-        careerWeb: { "Error": ["Could not generate career branches. Please try the quiz again."] }
-    };
-}
-    const finalResults = {
-        roadmapSummary: parsedPhase2.roadmapSummary,
-        streamRecommendations: parsedPhase2.streamRecommendations || [],
-        topCareerPaths: parsedPhase2.topCareerPaths || [],
-        careerWeb: parsedPhase2.careerWeb
-    };
+            const finalResults = {
+    roadmapSummary: parsedPhase2.roadmapSummary,
+    topCareerPaths: parsedPhase2.topCareerPaths || [],
+    careerWeb: parsedPhase2.careerWeb,
+    keyTimeline: parsedPhase2.keyTimeline || [],
+    recommendedResources: parsedPhase2.recommendedResources || [] // Make sure this line is present
+};;
 
-    localStorage.setItem("careerDishaResults", JSON.stringify(finalResults));
+            localStorage.setItem("careerDishaResults", JSON.stringify(finalResults));
 
-    await fetch(`${SUPABASE_URL}/rest/v1/quiz_results`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY, "Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
-        body: JSON.stringify({ phase: "final", answers: combinedAnswers, results: finalResults })
-    });
+            await fetch(`${SUPABASE_URL}/rest/v1/quiz_results`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "apikey": SUPABASE_ANON_KEY, "Authorization": `Bearer ${SUPABASE_ANON_KEY}` },
+                body: JSON.stringify({ phase: "final", answers: combinedAnswers, results: finalResults })
+            });
 
-    window.location.href = "./dashboard12.html";
-}
+            window.location.href = "./dashboard12.html";
+        }
 
-        } catch (err) {
-            console.error("Error during analysis:", err);
+    } catch (err) {
+        console.error("Error during analysis:", err);
     // FIX: Improved user-facing error message
     if (err.message && err.message.includes("503")) {
         alert("The AI model is currently busy and unable to process the request. Please wait a moment and try again.");
     } else {
         alert("An error occurred during the analysis. Please check your internet connection and try again.");
     }
-    // Hide loading spinner and show quiz UI again on error
-    document.getElementById('loading-container').classList.add('hidden');
-    document.getElementById('progress-container').classList.remove('hidden');
-    quizContainer.classList.remove('hidden');
-    document.getElementById('navigation-buttons').classList.remove('hidden');
-        }
+        // Hide loading spinner and show quiz UI again on error
+        document.getElementById('loading-container').classList.add('hidden');
+        document.getElementById('progress-container').classList.remove('hidden');
+        quizContainer.classList.remove('hidden');
+        document.getElementById('navigation-buttons').classList.remove('hidden');
     }
+}
 
     // Initial load - render quiz or run final phase
     if (phase !== "final") {

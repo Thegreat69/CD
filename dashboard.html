@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard | CareerDisha</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.8s ease-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                     <a href="./index.html" class="flex-shrink-0 flex items-center">
+                        <i data-feather="compass" class="text-blue-600 h-8 w-8"></i>
+                        <span class="ml-2 text-xl font-bold text-blue-600">CareerDisha</span>
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-8">
+                    <a href="./index.html#features" class="text-gray-600 hover:text-blue-600 font-medium">Features</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Pathways</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Colleges</a>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative">
+                        <button id="user-menu-button" class="flex items-center space-x-2">
+                            <span class="text-gray-700 font-medium" id="user-name">Student</span>
+                            <img class="h-8 w-8 rounded-full" src="https://placehold.co/100x100/EBF4FF/76A9FA?text=S" alt="User profile">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Your Personalized Career Roadmap</h1>
+                <p class="text-gray-600 mt-1" id="persona-summary">Here are the AI-powered recommendations based on your quiz.</p>
+            </div>
+            <div class="mt-4 md:mt-0">
+                <a href="./quiz.html" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition duration-300 inline-flex items-center">
+                    <i data-feather="refresh-cw" class="h-4 w-4 mr-2"></i> Retake Quiz
+                </a>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Stream Recommendations -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">Your Stream Recommendations</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-3 gap-6" id="stream-recommendations-container">
+                            <!-- Stream cards will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Career Paths -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">Top Career Paths For You</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid md:grid-cols-2 gap-6" id="career-paths-container">
+                             <!-- Career cards will be dynamically inserted here -->
+                        </div>
+                        <div class="mt-6">
+                            <a href="#" class="text-blue-600 font-medium hover:text-blue-800 inline-flex items-center">
+                                Explore All Career Options <i data-feather="arrow-right" class="ml-2 h-4 w-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-8">
+                <!-- Upcoming Deadlines -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-900">Key Timelines & Deadlines</h2>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-red-100 p-2 rounded-full mr-4 mt-1"><i data-feather="alert-circle" class="text-red-600 h-5 w-5"></i></div>
+                            <div>
+                                <h3 class="font-medium">JKCET Application Deadline</h3>
+                                <p class="text-sm text-gray-600">J&K Common Entrance Test for Engineering</p>
+                                <p class="text-sm font-semibold text-red-600 mt-1">Due: May 15, 2026</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-yellow-100 p-2 rounded-full mr-4 mt-1"><i data-feather="clock" class="text-yellow-600 h-5 w-5"></i></div>
+                            <div>
+                                <h3 class="font-medium">CUET Application Window</h3>
+                                <p class="text-sm text-gray-600">For central universities & many GDCs</p>
+                                <p class="text-sm font-semibold text-yellow-600 mt-1">Opens: Feb 27, 2026</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+    let resultsData;
+    try {
+        resultsData = JSON.parse(localStorage.getItem('careerDishaResults') || "{}");
+    } catch {
+        localStorage.removeItem('careerDishaResults');
+        resultsData = {};
+    }
+
+    if (resultsData && resultsData.persona) {
+        // If valid localStorage data
+        populateDashboard(resultsData);
+    } else {
+        // Fallback: fetch from Supabase
+        console.warn("No valid localStorage data, falling back to Supabase...");
+
+        const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
+
+        try {
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/quiz_results?select=*&order=created_at.desc&limit=1`, {
+                headers: {
+                    "apikey": SUPABASE_ANON_KEY,
+                    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+                }
+            });
+            const rows = await res.json();
+            if (rows.length > 0) {
+                populateDashboard(rows[0].results);
+            } else {
+                document.getElementById('persona-summary').textContent = "Take the quiz to get your personalized recommendations!";
+            }
+        } catch (err) {
+            console.error("Error loading from Supabase:", err);
+            document.getElementById('persona-summary').textContent = "Unable to load your results. Please try again later.";
+        }
+    }
+
+    feather.replace();
+});
+        
+
+        function populateDashboard(data) {
+            // Populate Persona
+            document.getElementById('persona-summary').textContent = data.persona;
+
+            // Populate Stream Recommendations
+            const streamContainer = document.getElementById('stream-recommendations-container');
+            streamContainer.innerHTML = ''; // Clear placeholders
+            const streamColors = { Science: '#3B82F6', Commerce: '#10B981', Arts: '#8B5CF6' };
+            const streamBgColors = { Science: '#EFF6FF', Commerce: '#ECFDF5', Arts: '#F5F3FF' };
+            
+            data.streamRecommendations.sort((a, b) => b.matchPercentage - a.matchPercentage).forEach(rec => {
+                const radius = 15.9155;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (rec.matchPercentage / 100) * circumference;
+
+                const streamCard = `
+                    <div class="border rounded-lg p-4 text-center">
+                        <div class="relative w-24 h-24 mx-auto mb-4">
+                            <svg class="w-full h-full" viewBox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${streamBgColors[rec.stream]}" stroke-width="3"/>
+                                <path class="progress-ring__circle" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="${streamColors[rec.stream]}" stroke-width="3" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>
+                                <text x="18" y="21.5" text-anchor="middle" font-size="8" fill="${streamColors[rec.stream]}" font-weight="bold">${rec.matchPercentage}%</text>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium" style="color: ${streamColors[rec.stream]}">${rec.stream}</h3>
+                        <p class="text-sm text-gray-600 mt-1">${rec.reason}</p>
+                    </div>
+                `;
+                streamContainer.innerHTML += streamCard;
+            });
+
+            // Populate Top Career Paths
+            const careerContainer = document.getElementById('career-paths-container');
+            careerContainer.innerHTML = ''; // Clear placeholders
+            const careerIcons = {
+                "Software Engineer": "cpu",
+                "Data Scientist": "bar-chart-2",
+                "Cybersecurity Specialist": "shield",
+                "default": "briefcase"
+            };
+            
+            data.topCareerPaths.forEach(path => {
+                const icon = careerIcons[path.career] || careerIcons.default;
+                const careerCard = `
+                    <div class="border border-gray-200 rounded-lg p-4 card-hover transition-all duration-300">
+                        <div class="flex items-start">
+                            <div class="bg-gray-100 p-3 rounded-full mr-4"><i data-feather="${icon}" class="text-gray-600 h-5 w-5"></i></div>
+                            <div>
+                                <h3 class="font-semibold text-lg mb-1">${path.career}</h3>
+                                <p class="text-gray-600 text-sm mb-2">${path.description}</p>
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <i data-feather="dollar-sign" class="h-4 w-4 mr-1"></i><span>${path.salary}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                careerContainer.innerHTML += careerCard;
+            });
+            feather.replace();
+        }
+    </script>
+</body>
+</html>

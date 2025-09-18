@@ -1,63 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- Android / Chrome -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CareerDisha">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192.png">
+
+    <!-- Windows / Edge -->
+    <meta name="msapplication-TileColor" content="#2563eb">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CareerDisha: Your Personalized Career Roadmap</title>
-
-    <!-- enable class-based dark mode for Tailwind -->
-    <script>
-      tailwind = window.tailwind || {};
-      tailwind.config = { darkMode: 'class' };
-    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-    <link rel="stylesheet" href="styledark.css">
+    <link rel="stylesheet" href="stylelight.css">
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-
     <style>
-        /* light hero gradient (matches your light sample) with dark override */
         .hero-gradient {
             background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
         }
-        .dark .hero-gradient {
-            /* premium dark gradient */
-            background: linear-gradient(135deg, #0f172a 0%, #0d9488 100%);
-        }
-
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        /* small interactive nicety */
-        .pathway-node { transition: all 0.3s ease; }
-        .pathway-node:hover { transform: scale(1.05); }
+        .pathway-node {
+            transition: all 0.3s ease;
+        }
+        .pathway-node:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50 dark:bg-gray-900 dark:text-gray-200">
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50 dark:bg-gray-900">
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
-                        <i data-feather="compass" class="text-blue-600 h-8 w-8 dark:text-blue-400"></i>
-                        <span class="ml-2 text-xl font-bold text-blue-600 dark:text-blue-400">CareerDisha</span>
+                        <i data-feather="compass" class="text-blue-600 h-8 w-8"></i>
+                        <span class="ml-2 text-xl font-bold text-blue-600">CareerDisha</span>
                     </div>
                 </div>
-
                 <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-8">
-                    <a href="#" class="text-blue-600 font-medium dark:text-blue-400">Home</a>
-                    <a href="#features" class="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-300 dark:hover:text-blue-400">Features</a>
-                    <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-300 dark:hover:text-blue-400">How It Works</a>
-                    <a href="#colleges" class="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-300 dark:hover:text-blue-400">Colleges</a>
+                    <a href="#" class="text-blue-600 font-medium">Home</a>
+                    <a href="#features" class="text-gray-600 hover:text-blue-600 font-medium">Features</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-blue-600 font-medium">How It Works</a>
+                    <a href="#colleges" class="text-gray-600 hover:text-blue-600 font-medium">Colleges</a>
                 </div>
-
                 <div class="flex items-center space-x-3">
     <!-- Theme toggle -->
     <button id="theme-toggle" aria-label="Toggle theme"
@@ -66,7 +67,9 @@
     </button>
 
     <!-- Welcome text -->
-    <span id="welcome-user" class="hidden text-gray-700 dark:text-gray-300 font-medium"></span>
+    <span id="welcome-user" class="hidden text-blue-600 dark:text-blue-400 font-semibold"></span>
+
+
 
     <!-- Login button -->
     <button id="login-btn" 
@@ -108,68 +111,68 @@
     </section>
 
     <!-- Features Section -->
-    <section id="features" class="py-20 bg-gray-50 dark:bg-gray-900">
+    <section id="features" class="py-20 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">From Skincare to Career Care: A Personalized Approach</h2>
-                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">From Skincare to Career Care: A Personalized Approach</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
                     Just like a skincare app creates a custom routine for you, our platform designs a personalized education roadmap based on your unique profile.
                 </p>
             </div>
             
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover dark:bg-gray-800" data-aos="fade-up" data-aos-delay="100">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover" data-aos="fade-up" data-aos-delay="100">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <div class="bg-blue-100 p-3 rounded-full"><i data-feather="clipboard" class="text-blue-600 h-6 w-6 dark:text-blue-400"></i></div>
-                            <h3 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Aptitude & Interest Quiz</h3>
+                            <div class="bg-blue-100 p-3 rounded-full"><i data-feather="clipboard" class="text-blue-600 h-6 w-6"></i></div>
+                            <h3 class="ml-3 text-xl font-semibold text-gray-900">Aptitude & Interest Quiz</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Our engaging quiz discovers your strengths to suggest the best academic streams for you.</p>
+                        <p class="text-gray-600">Our engaging quiz discovers your strengths to suggest the best academic streams for you.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover dark:bg-gray-800" data-aos="fade-up" data-aos-delay="200">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover" data-aos="fade-up" data-aos-delay="200">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <div class="bg-green-100 p-3 rounded-full"><i data-feather="layers" class="text-green-600 h-6 w-6 dark:text-green-400"></i></div>
-                            <h3 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Personalized Dashboard</h3>
+                            <div class="bg-green-100 p-3 rounded-full"><i data-feather="layers" class="text-green-600 h-6 w-6"></i></div>
+                            <h3 class="ml-3 text-xl font-semibold text-gray-900">Personalized Dashboard</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Get AI-powered recommendations for courses, careers, and nearby J&K colleges, all in one place.</p>
+                        <p class="text-gray-600">Get AI-powered recommendations for courses, careers, and nearby J&K colleges, all in one place.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover dark:bg-gray-800" data-aos="fade-up" data-aos-delay="300">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover" data-aos="fade-up" data-aos-delay="300">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <div class="bg-purple-100 p-3 rounded-full"><i data-feather="map" class="text-purple-600 h-6 w-6 dark:text-purple-400"></i></div>
-                            <h3 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Course-to-Career Mapper</h3>
+                            <div class="bg-purple-100 p-3 rounded-full"><i data-feather="map" class="text-purple-600 h-6 w-6"></i></div>
+                            <h3 class="ml-3 text-xl font-semibold text-gray-900">Course-to-Career Mapper</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Visualize how your education choices connect to future job opportunities with interactive flowcharts.</p>
+                        <p class="text-gray-600">Visualize how your education choices connect to future job opportunities with interactive flowcharts.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover dark:bg-gray-800" data-aos="fade-up" data-aos-delay="400">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover" data-aos="fade-up" data-aos-delay="400">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <div class="bg-yellow-100 p-3 rounded-full"><i data-feather="home" class="text-yellow-600 h-6 w-6 dark:text-yellow-400"></i></div>
-                            <h3 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Nearby College Directory</h3>
+                            <div class="bg-yellow-100 p-3 rounded-full"><i data-feather="home" class="text-yellow-600 h-6 w-6"></i></div>
+                            <h3 class="ml-3 text-xl font-semibold text-gray-900">Nearby College Directory</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Explore a detailed database of government colleges in J&K, with course info and facilities.</p>
+                        <p class="text-gray-600">Explore a detailed database of government colleges in J&K, with course info and facilities.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover dark:bg-gray-800" data-aos="fade-up" data-aos-delay="500">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover" data-aos="fade-up" data-aos-delay="500">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <div class="bg-red-100 p-3 rounded-full"><i data-feather="calendar" class="text-red-600 h-6 w-6 dark:text-red-400"></i></div>
-                            <h3 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Timeline Tracker</h3>
+                            <div class="bg-red-100 p-3 rounded-full"><i data-feather="calendar" class="text-red-600 h-6 w-6"></i></div>
+                            <h3 class="ml-3 text-xl font-semibold text-gray-900">Timeline Tracker</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Never miss an important deadline with personalized alerts for admissions, exams, and scholarships.</p>
+                        <p class="text-gray-600">Never miss an important deadline with personalized alerts for admissions, exams, and scholarships.</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover dark:bg-gray-800" data-aos="fade-up" data-aos-delay="600">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 card-hover" data-aos="fade-up" data-aos-delay="600">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <div class="bg-indigo-100 p-3 rounded-full"><i data-feather="users" class="text-indigo-600 h-6 w-6 dark:text-indigo-400"></i></div>
-                            <h3 class="ml-3 text-xl font-semibold text-gray-900 dark:text-white">Parent & Counselor Access</h3>
+                            <div class="bg-indigo-100 p-3 rounded-full"><i data-feather="users" class="text-indigo-600 h-6 w-6"></i></div>
+                            <h3 class="ml-3 text-xl font-semibold text-gray-900">Parent & Counselor Access</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400">Share your career roadmap with your parents and counselors for their guidance and support.</p>
+                        <p class="text-gray-600">Share your career roadmap with your parents and counselors for their guidance and support.</p>
                     </div>
                 </div>
             </div>
@@ -177,35 +180,35 @@
     </section>
 
     <!-- How It Works Section -->
-    <section id="how-it-works" class="py-20 bg-white dark:bg-gray-800">
+    <section id="how-it-works" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Your Journey to Clarity in 4 Simple Steps</h2>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Your Journey to Clarity in 4 Simple Steps</h2>
             </div>
             <div class="relative">
                 <!-- Dotted line for desktop -->
-                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 dark:bg-gray-700" style="transform: translateY(-50%); z-index: 1;"></div>
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-200" style="transform: translateY(-50%); z-index: 1;"></div>
                 
                 <div class="relative grid md:grid-cols-4 gap-12 z-10">
                     <div class="flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="100">
-                        <div class="bg-blue-100 p-6 rounded-full mb-4 border-4 border-white shadow-md dark:bg-blue-900 dark:border-gray-800"><i data-feather="edit" class="text-blue-600 h-8 w-8 dark:text-blue-400"></i></div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">1. Take the Quiz</h3>
-                        <p class="text-gray-600 dark:text-gray-400">Answer simple questions about your interests and strengths.</p>
+                        <div class="bg-blue-100 p-6 rounded-full mb-4 border-4 border-white shadow-md"><i data-feather="edit" class="text-blue-600 h-8 w-8"></i></div>
+                        <h3 class="text-xl font-semibold mb-2">1. Take the Quiz</h3>
+                        <p class="text-gray-600">Answer simple questions about your interests and strengths.</p>
                     </div>
                     <div class="flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="200">
-                        <div class="bg-green-100 p-6 rounded-full mb-4 border-4 border-white shadow-md dark:bg-green-900 dark:border-gray-800"><i data-feather="cpu" class="text-green-600 h-8 w-8 dark:text-green-400"></i></div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">2. Get AI Analysis</h3>
-                        <p class="text-gray-600 dark:text-gray-400">Our AI processes your answers to find your best-fit streams.</p>
+                        <div class="bg-green-100 p-6 rounded-full mb-4 border-4 border-white shadow-md"><i data-feather="cpu" class="text-green-600 h-8 w-8"></i></div>
+                        <h3 class="text-xl font-semibold mb-2">2. Get AI Analysis</h3>
+                        <p class="text-gray-600">Our AI processes your answers to find your best-fit streams.</p>
                     </div>
                     <div class="flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="300">
-                        <div class="bg-purple-100 p-6 rounded-full mb-4 border-4 border-white shadow-md dark:bg-purple-900 dark:border-gray-800"><i data-feather="map" class="text-purple-600 h-8 w-8 dark:text-purple-400"></i></div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">3. Explore Your Roadmap</h3>
-                        <p class="text-gray-600 dark:text-gray-400">See your personalized dashboard with career and college options.</p>
+                        <div class="bg-purple-100 p-6 rounded-full mb-4 border-4 border-white shadow-md"><i data-feather="map" class="text-purple-600 h-8 w-8"></i></div>
+                        <h3 class="text-xl font-semibold mb-2">3. Explore Your Roadmap</h3>
+                        <p class="text-gray-600">See your personalized dashboard with career and college options.</p>
                     </div>
                     <div class="flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="400">
-                        <div class="bg-yellow-100 p-6 rounded-full mb-4 border-4 border-white shadow-md dark:bg-yellow-900 dark:border-gray-800"><i data-feather="check-circle" class="text-yellow-600 h-8 w-8 dark:text-yellow-400"></i></div>
-                        <h3 class="text-xl font-semibold mb-2 text-gray-900 dark:text-white">4. Make Confident Decisions</h3>
-                        <p class="text-gray-600 dark:text-gray-400">Choose your path forward with clarity and confidence.</p>
+                        <div class="bg-yellow-100 p-6 rounded-full mb-4 border-4 border-white shadow-md"><i data-feather="check-circle" class="text-yellow-600 h-8 w-8"></i></div>
+                        <h3 class="text-xl font-semibold mb-2">4. Make Confident Decisions</h3>
+                        <p class="text-gray-600">Choose your path forward with clarity and confidence.</p>
                     </div>
                 </div>
             </div>
@@ -213,10 +216,10 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-16 bg-blue-600 text-white dark:bg-blue-900">
+    <section class="py-16 bg-blue-600 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl font-bold mb-6" data-aos="fade-up">Ready to Discover Your Future?</h2>
-            <p class="text-xl mb-8 max-w-3xl mx-auto text-blue-100 dark:text-blue-200" data-aos="fade-up" data-aos-delay="100">
+            <p class="text-xl mb-8 max-w-3xl mx-auto text-blue-100" data-aos="fade-up" data-aos-delay="100">
                 Take the first step. Our free, AI-powered quiz is the key to unlocking your personalized career roadmap.
             </p>
             <a href="./quiz.html" class="px-8 py-4 bg-white text-blue-600 font-bold rounded-md hover:bg-blue-50 transition duration-300 inline-flex items-center text-lg" data-aos="fade-up" data-aos-delay="200">
@@ -226,7 +229,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-16 pb-8 dark:bg-gray-950 dark:text-gray-400">
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
                 <div>
@@ -263,7 +266,7 @@
     </footer>
 
     <!-- Neumorphic Login Modal (replace your existing #login-modal) -->
-     <div id="login-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div id="login-modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div class="neumorph-card" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <button id="close-modal" class="neumorph-close" aria-label="Close">×</button>
     
@@ -306,82 +309,55 @@
 
     <script>
         AOS.init({ once: true });
-
-        // Render feather icons used in the page (other icons)
         feather.replace();
+          (function () {
+            const btn = document.getElementById("theme-toggle");
+            if (!btn) return;
+                
+            // File names for your pages
+            const lightFile = "index-light.html";
+            const darkFile  = "index-dark.html";
 
-        // Theme toggle logic (reliable):
-       
-            (function () {
-                const btn = document.getElementById("theme-toggle");
-                            if (!btn) return;
+            // Get the current file name (just the file, not the whole path)
+            function currentFileName() {
+              return window.location.pathname.split("/").pop().toLowerCase();
+            }
 
-                    // File names for your pages
-                const lightFile = "index-light.html";
-                const darkFile  = "index-dark.html";
-
-                // Get the current file name (just the file, not the whole path)
-                            function currentFileName() {
-                  return window.location.pathname.split("/").pop().toLowerCase();
-                }
-            
-                // Set the correct icon for the button
-                function setIconForCurrentPage() {
+            // Set the correct icon for the button
+            function setIconForCurrentPage() {
                   const current = currentFileName();
-                  if (window.feather && feather.icons) {
-                    if (current === darkFile) {
-                      // If we’re on dark page, show ☀️ sun (means switch to light)
-                      btn.innerHTML = feather.icons.sun.toSvg({ class: "h-5 w-5" });
-                      btn.setAttribute("aria-label", "Switch to light theme");
-                    } else {
-                      // If we’re on light page, show 🌙 moon (means switch to dark)
-                      btn.innerHTML = feather.icons.moon.toSvg({ class: "h-5 w-5" });
-                      btn.setAttribute("aria-label", "Switch to dark theme");
-                    }
-                  } else {
-                    btn.textContent = current === darkFile ? "Light" : "Dark";
-                  }
+              if (window.feather && feather.icons) {
+                if (current === darkFile) {
+                  // If we’re on dark page, show ☀️ sun (means switch to light)
+                  btn.innerHTML = feather.icons.sun.toSvg({ class: "h-5 w-5" });
+                  btn.setAttribute("aria-label", "Switch to light theme");
+                } else {
+                  // If we’re on light page, show 🌙 moon (means switch to dark)
+                  btn.innerHTML = feather.icons.moon.toSvg({ class: "h-5 w-5" });
+                  btn.setAttribute("aria-label", "Switch to dark theme");
                 }
+              } else {
+                // fallback text if feather icons don’t load
+                btn.textContent = current === darkFile ? "Light" : "Dark";
+              }
+            }
 
-                // What happens when user clicks
-                btn.addEventListener("click", () => {
-                  const current = currentFileName();
-                  const target = (current === lightFile) ? darkFile : lightFile;
-                  window.location.href = target; // navigate to the other file
-                });
+    // What happens when user clicks
+    btn.addEventListener("click", () => {
+      const current = currentFileName();
+      const target = (current === lightFile) ? darkFile : lightFile;
+      window.location.href = target; // navigate to the other file
+    });
 
-  // Initialize icon when page loads
-  setIconForCurrentPage();
-})();               
+    // Initialize icon when page loads
+    setIconForCurrentPage();
+  })();
 
-            // apply saved theme on <html>
-            document.documentElement.classList.toggle("dark", localStorage.getItem("theme") === "dark");
-
-            // helper to set the SVG icon inside the button using feather icons
-            // helper to set the SVG icon inside the button using feather icons
-                function setToggleIcon(theme) {
-                    if (!btn) return;
-                    if (theme === "dark") {
-                        btn.innerHTML = feather.icons.sun.toSvg({ class: "h-5 w-5" });
-                    } else {
-                        btn.innerHTML = feather.icons.moon.toSvg({ class: "h-5 w-5" });
-                    }
-                }
-
-                // initialize icon immediately
-                setToggleIcon(localStorage.getItem("theme"));
-
-                btn.addEventListener("click", () => {
-                    const current = localStorage.getItem("theme");
-                    const next = current === "dark" ? "light" : "dark";
-                    localStorage.setItem("theme", next);
-                    document.documentElement.classList.toggle("dark", next === "dark");
-                    setToggleIcon(next);
-                });
-
-       
     </script>
 <!-- REPLACE your existing Supabase script block with this -->
+<!-- Load Supabase UMD bundle -->
+
+
 <!-- Replace your old Supabase script with this -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -547,7 +523,7 @@ function setLoggedInState(session) {
 
 
     // ----- Auth listeners -----
-   let pendingRedirect = null;
+ let pendingRedirect = null;
 
 supabaseClient.auth.onAuthStateChange((event, session) => {
   console.log('[Auth] onAuthStateChange', event, session);
@@ -603,6 +579,7 @@ document.querySelectorAll('a[href$="quiz.html"], a[href$="study-level.html"]').f
     }
   });
 });
+
 
 
 
