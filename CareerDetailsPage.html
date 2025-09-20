@@ -19,6 +19,9 @@
     <title>Career Details | CareerDisha</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <style>
         /* Base styles from other pages for consistency */
         @keyframes pop-in {
@@ -64,6 +67,12 @@
 
         <div id="details-container" class="hidden">
             </div>
+            <div class="text-center mt-6">
+    <button id="download-pdf-btn" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
+        <i data-feather="download" class="inline-block mr-2"></i> Download Career Plan (PDF)
+    </button>
+</div>
+
     </main>
 
     <div id="chatbot-component" class="hidden">
@@ -106,7 +115,7 @@
     });
 
     async function generateCareerDetails(careerTitle) {
-        const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE"; // Replace with your key
+        const YOUR_SUPABASE_FUNCTION_URL = "https://mnarcdqecoxdidnjakch.supabase.co/functions/v1/gemini-proxy";
         // Retrieve student's original quiz answers for context
         const quizResults = JSON.parse(localStorage.getItem('careerDishaResults') || '{}');
         const studentContext = JSON.stringify(quizResults, null, 2);
@@ -147,7 +156,7 @@
         `;
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(YOUR_SUPABASE_FUNCTION_URL,  {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -269,14 +278,18 @@
         container.classList.remove('hidden');
         document.getElementById('chatbot-component').classList.remove('hidden');
         
-        feather.replace();
+             feather.replace();
         initializeChatbot();
+
+        // ✅ Show the Download PDF button once details are ready
+        document.getElementById("download-pdf-btn").style.display = "block";
     }
+
 
     // --- Chatbot Logic ---
     function initializeChatbot() {
         // NOTE: This key seems to have a typo, but leaving as is from your original file.
-        const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE-D_Amk4-D_Amk4-D_Amk4";
+        const YOUR_SUPABASE_FUNCTION_URL = "https://mnarcdqecoxdidnjakch.supabase.co/functions/v1/gemini-proxy";
         const fab = document.getElementById('chat-fab'), chatWindow = document.getElementById('chat-window'), closeBtn = document.getElementById('chat-close-btn'), messagesContainer = document.getElementById('chat-messages'), input = document.getElementById('chat-input'), sendBtn = document.getElementById('chat-send-btn');
         if (!fab) return;
         
@@ -325,7 +338,7 @@
             `;
             
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${YOUR_SUPABASE_FUNCTION_URL}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 250 } })
@@ -351,6 +364,43 @@
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
         feather.replace();
     }
+        // ✅ Step 3: Download PDF logic
+    document.getElementById("download-pdf-btn").addEventListener("click", async () => {
+        const { jsPDF } = window.jspdf;
+        const container = document.getElementById("details-container");
+
+        // Use html2canvas to capture the container
+        const canvas = await html2canvas(container, { scale: 2 });
+        const imgData = canvas.toDataURL("image/png");
+
+        // Create a new PDF
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+
+        // Calculate image size to fit the page
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Add first page
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Add extra pages if content is longer than one page
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // Save file
+        pdf.save(`${window.careerDetailsData.careerTitle || "career-plan"}.pdf`);
+    });
+
     </script>
 
 </body>

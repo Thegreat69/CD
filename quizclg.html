@@ -354,73 +354,68 @@
     document.getElementById('loading-container').classList.remove('hidden');
 
     try {
-        const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE";
+        const YOUR_SUPABASE_FUNCTION_URL = "https://mnarcdqecoxdidnjakch.supabase.co/functions/v1/gemini-proxy";
         const SUPABASE_URL = "https://mnarcdqecoxdidnjakch.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uYXJjZHFlY294ZGlkbmpha2NoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1MTg2NzgsImV4cCI6MjA3MzA5NDY3OH0.INsDlgDxsrQiWPdZfRIXcI3EWLqD7dvWkaq3klaQyuc";
 
-        if (phase !== "final") {
-            // ================= Phase 1: Generate Follow-up Questions =================
-            const prompt = `
-You are a career coach for an undergraduate college student in India.
+                if (phase !== "final") {
+            // ================= Phase 1: Generate Extra Questions (Corrected) =================
+            const phase1Prompt = `
+You are an expert career counselor for a college student in India.
 
-⚠️ Rules:
-- Generate EXACTLY 10 follow-up questions.
-- All must be multiple-choice (no text-only).
-- Each must have 3–5 options.
-- Each must include "type": "single" or "multiple".
+⚠️ Important Rules:
+- Generate EXACTLY 20 follow-up questions.
+- Every question MUST be multiple-choice only ("single" or "multiple" type).
+- Each question MUST include 3–5 clear option strings.
+- Do NOT generate free-text or open-ended questions.
+- Keep the tone relevant for a student pursuing a degree.
+- Each question object must include keys: id, question, type, and options.
 
-Answers so far:
+Student's answers so far:
 ${JSON.stringify(userAnswers, null, 2)}
 
-Return ONLY JSON in this format:
+Return ONLY a valid JSON object exactly in this format:
 {
   "extraQuestions": [
-    { "id": 101, "question": "Sample Q?", "type": "single", "options": ["A","B","C"] }
+    { "id": 101, "question": "Which industry are you most interested in for internships?", "type": "single", "options": ["IT/Software", "Finance/Banking", "Core Engineering", "Marketing/Sales"] }
   ]
 }
 `;
-
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(YOUR_SUPABASE_FUNCTION_URL,  {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{ role: "user", parts: [{ text: prompt }] }],
-                    generationConfig: { temperature: 0.7, maxOutputTokens: 800, response_mime_type: "application/json" }
+                    contents: [{ role: "user", parts: [{ text: phase1Prompt }] }],
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 2048, response_mime_type: "application/json" }
                 })
             });
 
             if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
             const result = await response.json();
-            const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-            
-            let parsedPhase1;
+            const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+            let parsedPhase1 = { extraQuestions: [] };
             try {
-                const jsonString = generatedText.substring(generatedText.indexOf('{'), generatedText.lastIndexOf('}') + 1);
-                parsedPhase1 = JSON.parse(jsonString);
-            } catch (e) { console.error("Failed to parse Gemini output (phase1):", e); parsedPhase1 = { extraQuestions: [] }; }
-            
-            let extraQs = parsedPhase1.extraQuestions || [];
+                const start = generatedText.indexOf('{');
+                const end = generatedText.lastIndexOf('}');
+                if (start !== -1 && end !== -1 && end > start) {
+                    parsedPhase1 = JSON.parse(generatedText.substring(start, end + 1));
+                }
+            } catch (e) {
+                console.warn("Phase1 JSON parse failed, using empty array.", e);
+            }
 
-// ✅ Step 1: filter out invalid/text-only
-extraQs = extraQs.filter(q => Array.isArray(q.options) && q.options.length > 0);
+            let extraQs = (parsedPhase1.extraQuestions || []).filter(q => Array.isArray(q.options) && q.options.length > 0);
 
-// ✅ Step 2: pad until exactly 10
-while (extraQs.length < 10) {
-  extraQs.push({
-    id: 300 + extraQs.length,
-    question: `Backup Question ${extraQs.length + 1}`,
-    type: "single",
-    options: ["Option A", "Option B", "Option C", "Option D"]
-  });
-}
-
-// ✅ Step 3: trim if more than 10
-extraQs = extraQs.slice(0, 10);
+            while (extraQs.length < 20) {
+                extraQs.push({ id: 200 + extraQs.length, question: `Backup Question ${extraQs.length + 1}`, type: "single", options: ["Option A", "Option B", "Option C"] });
+            }
+            extraQs = extraQs.slice(0, 20);
 
             localStorage.setItem("careerDishaExtraQuestions", JSON.stringify(extraQs));
             localStorage.setItem("careerDishaQuizAnswers", JSON.stringify(userAnswers));
-            
-            window.location.href = "./questions.html?from=quizclg"; // Corrected redirect
+
+            window.location.href = "./questions.html?from=quizclg";
 
         } else {
             // ================= Phase 2: Final Analysis =================
@@ -428,40 +423,25 @@ extraQs = extraQs.slice(0, 10);
             const extraAnswers = JSON.parse(localStorage.getItem("careerDishaExtraAnswers") || "{}");
             const combinedAnswers = { quizAnswers, extraAnswers };
 
-             const prompt = `
-    You are a career coach for an undergraduate college student in India. The current date is September 18, 2025.
-    Based on the student's answers, generate a personalized career roadmap.
+            const prompt = `
+                You are a career coach for an undergraduate college student in India. The current date is September 18, 2025.
+                Based on the student's answers, generate a personalized career roadmap.
 
-    ***
-    **Student's Answers:**
-    ${JSON.stringify(combinedAnswers, null, 2)}
-    ***
+                ***
+                **Student's Answers:**
+                ${JSON.stringify(combinedAnswers, null, 2)}
+                ***
 
-    Your task is to return ONLY a JSON object with five keys: "roadmapSummary", "keySkills", "careerWeb", and "recommendedResources".
+                Your task is to return ONLY a JSON object with five keys: "roadmapSummary", "keySkills", "careerWeb", "keyTimeline", and "recommendedResources".
 
-    1.  **roadmapSummary**: A summary (~150 words) focusing on actionable advice.
-    2.  **keySkills**: An array of exactly 4 essential skill objects. Each object MUST have "skill", "description", and an "icon" from this list: ['code', 'bar-chart', 'users', 'edit', 'speaker', 'database'].
-    3.  **careerWeb**: An object representing 3 career progression paths. Each path must be an array of step objects, where each step object has a "step" and "description".
-    4.  **keyTimeline**: An array of exactly 4 upcoming event objects. Each object MUST have a "title" (the name of the event), a "date" (Month YYYY), and a "type" from this list: ['internship', 'exam', 'placement', 'event'].
-    5.  **recommendedResources**: An array of exactly 3 helpful resource objects. Each object MUST have a "title" (the name of the resource), a "description" (a brief summary), and a "url".
+                1.  **roadmapSummary**: A summary (~150 words) focusing on actionable advice like internships, skill development, and post-graduation options.
+                2.  **keySkills**: An array of exactly 4 essential skill objects for their likely career path. Each object must have keys for "skill" (e.g., 'Data Analysis'), "description" (a brief explanation), and "icon" (choose from this list: 'code', 'bar-chart', 'users', 'edit', 'speaker', 'database').               
+                3.  **careerWeb**: An object representing 3 career progression paths. Each path MUST contain a non-empty array of objects. **Each object MUST have two keys: a "step" (a short title, e.g., "Year 1: Skill Building") and a "description" (a brief 1-2 sentence explanation).**
+                4.  **keyTimeline**: **You MUST generate** an array of **at least 3** upcoming events relevant to an undergraduate student in India. This field is required. Include events like "Summer Internship Applications", "Campus Placement Drives", or "CAT/GATE Exam Registration". Each event needs a "title", "date" (e.g., "Oct 2025"), and a "type" ('internship', 'exam', 'placement').
+                5.  **recommendedResources**: An array of 2-4 helpful resources. Each resource must be an object with "title", "description", and a valid "url" (e.g., to LinkedIn, Internshala, Coursera).
+            `;
 
-    Example of the required JSON output format:
-    {
-      "roadmapSummary": "...",
-      "keySkills": [
-        { "skill": "Data Analysis", "description": "Analyzing data to find insights.", "icon": "bar-chart" }
-      ],
-      "careerWeb": { "Corporate Path": [{ "step": "Internship", "description": "Gain experience." }] },
-      "keyTimeline": [
-        { "title": "CAT 2025 Registration Deadline", "date": "October 2025", "type": "exam" }
-      ],
-      "recommendedResources": [
-        { "title": "Coursera", "description": "Online courses for professional development.", "url": "https://coursera.org" }
-      ]
-    }
-`;
-
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            const response = await fetch(YOUR_SUPABASE_FUNCTION_URL,{
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -482,8 +462,7 @@ extraQs = extraQs.slice(0, 10);
 
             const finalResults = {
                 roadmapSummary: parsedPhase2.roadmapSummary,
-                keySkills: parsedPhase2.keySkills || [],
-
+                keySkills: parsedPhase2.keySkills || [], 
                 careerWeb: parsedPhase2.careerWeb,
                 keyTimeline: parsedPhase2.keyTimeline || [],
                 recommendedResources: parsedPhase2.recommendedResources || []

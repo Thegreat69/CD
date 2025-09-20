@@ -540,7 +540,10 @@
 
           await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: redirectUrl } // redirects back to current page
+
+            options: { redirectTo: window.location.href } // redirects back to current page
+
+            //options: { redirectTo: redirectUrl } // redirects back to current page
 
           });
           // NOTE: code after signInWithOAuth won't run because the browser navigates away.
@@ -686,7 +689,7 @@ document.querySelectorAll('a[href$="study-level.html"], a[href$="study-level.htm
 <script>
 (function() {
     // --- CONFIG ---
-    const GEMINI_API_KEY = "AIzaSyA6U2sLH6A5o21dvSuqjDxPVq086UtukAE"; // Use the same key from your quiz files
+    const GEMINI_API_KEY = "AIzaSyB1JhOEai1tJRz2D4ZTJt9FT4Kxecoh1Co"; // Use the same key from your quiz files
 
     // --- DOM ELEMENTS ---
     const fab = document.getElementById('chat-fab');

@@ -100,30 +100,7 @@ try {
 }
 // --- Fixed text questions for Class 10 students ---
 // --- Fixed text questions for Class 10 students ---
-const extraTextQuestions10 = [
-  { id: 201, question: "What career do you dream of pursuing?", type: "text", options: [] },
-  { id: 202, question: "Which subject do you feel most confident in?", type: "text", options: [] },
-  { id: 203, question: "Who is your biggest role model for career inspiration?", type: "text", options: [] },
-  { id: 204, question: "What kind of work do you think you’ll enjoy the most?", type: "text", options: [] },
-  { id: 205, question: "What motivates you to study harder?", type: "text", options: [] }
-];
 
-// --- Fixed text questions for Class 12 students ---
-const extraTextQuestions12 = [
-  { id: 301, question: "Which entrance exams are you considering after Class 12?", type: "text", options: [] },
-  { id: 302, question: "Do you plan to study in India or abroad?", type: "text", options: [] },
-  { id: 303, question: "Which subject do you feel most confident about for higher studies?", type: "text", options: [] },
-  { id: 304, question: "What career path do you dream of pursuing after Class 12?", type: "text", options: [] },
-  { id: 305, question: "What factors influence your decision most — salary, passion, or family guidance?", type: "text", options: [] }
-];
-// --- Fixed text questions for College students ---
-const extraTextQuestionsClg = [
-  { id: 401, question: "Which industry or sector are you most interested in?", type: "text", options: [] },
-  { id: 402, question: "Do you plan to pursue higher studies (MBA, Masters, UPSC, etc.) after graduation?", type: "text", options: [] },
-  { id: 403, question: "Are you aiming for placements, entrepreneurship, or competitive exams?", type: "text", options: [] },
-  { id: 404, question: "What kind of internships or projects excite you the most?", type: "text", options: [] },
-  { id: 405, question: "Where do you see yourself five years after graduation?", type: "text", options: [] }
-];
 
 // Keep only AI-generated MCQs (with options)
 extraQuestions = extraQuestions.filter(q => Array.isArray(q.options) && q.options.length > 0);
@@ -132,18 +109,6 @@ extraQuestions = extraQuestions.filter(q => Array.isArray(q.options) && q.option
 // Detect which quiz sent the student here
 const urlParams = new URLSearchParams(window.location.search);
 const originQuiz = urlParams.get('from');
-
-if (originQuiz === "quiz10") {
-  extraQuestions = [...extraQuestions, ...extraTextQuestions10];
-} else if (originQuiz === "quiz12") {
-  extraQuestions = [...extraQuestions, ...extraTextQuestions12];
-} else if (originQuiz === "quizclg") {
-  extraQuestions = [...extraQuestions, ...extraTextQuestionsClg];
-}
-
-
-
-
 
 let currentQuestionIndex = 0;
 const userExtraAnswers = {};
